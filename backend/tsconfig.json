@@ -1,0 +1,59 @@
+{
+  "compilerOptions": {
+    /* Language and Environment */
+    "target": "ES2020",                          // Set the JavaScript language version for emitted JavaScript
+    "module": "commonjs",                        // Specify what module code is generated
+    "lib": ["ES2020"],                           // Specify library files to be included in the compilation
+    "moduleResolution": "node",                   // Specify how TypeScript looks up a file from a given module specifier
+
+    /* Emit */
+    "outDir": "./dist",                          // Specify an output folder for all emitted files
+    "rootDir": "./",                             // Specify the root folder within your source files
+    "removeComments": true,                       // Disable emitting comments
+    "noEmitOnError": true,                       // Disable emitting files if any type checking errors are reported
+    "sourceMap": true,                           // Generate source map files for emitted JavaScript files
+    "declaration": true,                         // Generate .d.ts files from TypeScript and JavaScript files
+    "declarationMap": true,                      // Generate sourcemaps for d.ts files
+
+    /* Interop Constraints */
+    "esModuleInterop": true,                     // Emit additional JavaScript to ease support for importing CommonJS modules
+    "allowSyntheticDefaultImports": true,        // Allow 'import x from y' when a module doesn't have a default export
+    "forceConsistentCasingInFileNames": true,    // Ensure that casing is correct in imports
+
+    /* Type Checking */
+    "strict": true,                              // Enable all strict type-checking options
+    "noImplicitAny": true,                       // Enable error reporting for expressions and declarations with an implied 'any' type
+    "strictNullChecks": true,                    // When type checking, take into account 'null' and 'undefined'
+    "strictFunctionTypes": true,                 // When assigning functions, check to ensure parameters and the return values are subtype-compatible
+    "strictBindCallApply": true,                 // Check that the arguments for 'bind', 'call', and 'apply' methods match the original function
+    "strictPropertyInitialization": true,        // Check for class properties that are declared but not set in the constructor
+    "noImplicitThis": true,                      // Enable error reporting when 'this' is given the type 'any'
+    "alwaysStrict": true,                        // Ensure 'use strict' is always emitted
+    "noUnusedLocals": true,                      // Enable error reporting when local variables aren't read
+    "noUnusedParameters": true,                  // Raise an error when a function parameter isn't read
+    "noImplicitReturns": true,                   // Enable error reporting for codepaths that do not explicitly return in a function
+    "noFallthroughCasesInSwitch": true,         // Enable error reporting for fallthrough cases in switch statements
+    "noUncheckedIndexedAccess": false,          // Add 'undefined' to a type when accessed using an index
+    "noImplicitOverride": true,                  // Ensure overriding members in derived classes are marked with the 'override' modifier
+    "noPropertyAccessFromIndexSignature": false, // Enforces using indexed accessors for keys declared using an indexed type
+
+    /* Completeness */
+    "skipLibCheck": true                         // Skip type checking all .d.ts files
+  },
+  "include": [
+    "**/*.ts"                                    // Include all TypeScript files in the project
+  ],
+  "exclude": [
+    "node_modules",                              // Exclude node_modules directory
+    "dist",                                      // Exclude build output directory
+    "**/*.test.ts",                              // Exclude test files (if you have a separate test config)
+    "**/*.spec.ts"                               // Exclude spec files
+  ],
+  "ts-node": {
+    "esm": false,                                // Disable ESM for ts-node
+    "compilerOptions": {
+      "module": "commonjs"                       // Use CommonJS for ts-node
+    }
+  }
+}
+

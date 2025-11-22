@@ -1,0 +1,970 @@
+{
+  "metadata": {
+    "timestamp": "2025-11-22T10:36:16.870Z",
+    "database": "hcl",
+    "uri": "mongodb://localhost:27017/hcl",
+    "mongooseVersion": "8.20.1",
+    "totalModels": 13
+  },
+  "schemas": {
+    "User": {
+      "collectionName": "users",
+      "modelName": "User",
+      "fields": [
+        {
+          "name": "name",
+          "type": "String",
+          "required": true,
+          "trim": true
+        },
+        {
+          "name": "email",
+          "type": "String",
+          "required": true,
+          "unique": true,
+          "index": true,
+          "match": "/^\\S+@\\S+\\.\\S+$/,Please enter a valid email address",
+          "trim": true,
+          "lowercase": true
+        },
+        {
+          "name": "password",
+          "type": "String",
+          "required": true,
+          "select": false
+        },
+        {
+          "name": "phone_no",
+          "type": "String",
+          "trim": true
+        },
+        {
+          "name": "DOB",
+          "type": "Date"
+        },
+        {
+          "name": "gender",
+          "type": "String",
+          "enum": [
+            "male",
+            "female",
+            "other"
+          ]
+        },
+        {
+          "name": "stat",
+          "type": "String",
+          "default": "active",
+          "enum": [
+            "active",
+            "inactive"
+          ],
+          "index": true
+        },
+        {
+          "name": "role",
+          "type": "ObjectId",
+          "required": true,
+          "ref": "Role",
+          "index": true
+        },
+        {
+          "name": "_id",
+          "type": "ObjectId"
+        },
+        {
+          "name": "created_at",
+          "type": "Date"
+        },
+        {
+          "name": "updated_at",
+          "type": "Date"
+        },
+        {
+          "name": "__v",
+          "type": "Number"
+        }
+      ],
+      "indexes": [
+        {
+          "fields": {
+            "email": 1
+          },
+          "options": {
+            "unique": true,
+            "background": true
+          }
+        },
+        {
+          "fields": {
+            "stat": 1
+          },
+          "options": {
+            "background": true
+          }
+        },
+        {
+          "fields": {
+            "role": 1
+          },
+          "options": {
+            "background": true
+          }
+        },
+        {
+          "fields": {
+            "email": 1
+          },
+          "options": {
+            "unique": true,
+            "background": true
+          }
+        },
+        {
+          "fields": {
+            "role": 1,
+            "stat": 1
+          },
+          "options": {
+            "background": true
+          }
+        }
+      ],
+      "timestamps": {
+        "createdAt": "created_at",
+        "updatedAt": "updated_at"
+      }
+    },
+    "Role": {
+      "collectionName": "roles",
+      "modelName": "Role",
+      "fields": [
+        {
+          "name": "role_name",
+          "type": "String",
+          "required": true,
+          "enum": [
+            "patient",
+            "healthcare_provider",
+            "admin"
+          ],
+          "unique": true,
+          "trim": true,
+          "lowercase": true
+        },
+        {
+          "name": "stat",
+          "type": "String",
+          "default": "active",
+          "enum": [
+            "active",
+            "inactive"
+          ]
+        },
+        {
+          "name": "_id",
+          "type": "ObjectId"
+        },
+        {
+          "name": "created_at",
+          "type": "Date"
+        },
+        {
+          "name": "updated_at",
+          "type": "Date"
+        },
+        {
+          "name": "__v",
+          "type": "Number"
+        }
+      ],
+      "indexes": [
+        {
+          "fields": {
+            "role_name": 1
+          },
+          "options": {
+            "unique": true,
+            "background": true
+          }
+        }
+      ],
+      "timestamps": {
+        "createdAt": "created_at",
+        "updatedAt": "updated_at"
+      }
+    },
+    "HealthcareCategory": {
+      "collectionName": "healthcarecategories",
+      "modelName": "HealthcareCategory",
+      "fields": [
+        {
+          "name": "name",
+          "type": "String",
+          "required": true,
+          "unique": true,
+          "trim": true
+        },
+        {
+          "name": "stat",
+          "type": "String",
+          "default": "active",
+          "enum": [
+            "active",
+            "inactive"
+          ]
+        },
+        {
+          "name": "_id",
+          "type": "ObjectId"
+        },
+        {
+          "name": "created_at",
+          "type": "Date"
+        },
+        {
+          "name": "updated_at",
+          "type": "Date"
+        },
+        {
+          "name": "__v",
+          "type": "Number"
+        }
+      ],
+      "indexes": [
+        {
+          "fields": {
+            "name": 1
+          },
+          "options": {
+            "unique": true,
+            "background": true
+          }
+        },
+        {
+          "fields": {
+            "name": 1
+          },
+          "options": {
+            "unique": true,
+            "background": true
+          }
+        }
+      ],
+      "timestamps": {
+        "createdAt": "created_at",
+        "updatedAt": "updated_at"
+      }
+    },
+    "HealthcareProvider": {
+      "collectionName": "healthcareproviders",
+      "modelName": "HealthcareProvider",
+      "fields": [
+        {
+          "name": "user",
+          "type": "ObjectId",
+          "required": true,
+          "ref": "User",
+          "unique": true,
+          "index": true
+        },
+        {
+          "name": "specialisation",
+          "type": "String",
+          "required": true,
+          "trim": true
+        },
+        {
+          "name": "care_category",
+          "type": "ObjectId",
+          "required": true,
+          "ref": "HealthcareCategory"
+        },
+        {
+          "name": "stat",
+          "type": "String",
+          "default": "active",
+          "enum": [
+            "active",
+            "inactive"
+          ]
+        },
+        {
+          "name": "_id",
+          "type": "ObjectId"
+        },
+        {
+          "name": "created_at",
+          "type": "Date"
+        },
+        {
+          "name": "updated_at",
+          "type": "Date"
+        },
+        {
+          "name": "__v",
+          "type": "Number"
+        }
+      ],
+      "indexes": [
+        {
+          "fields": {
+            "user": 1
+          },
+          "options": {
+            "unique": true,
+            "background": true
+          }
+        },
+        {
+          "fields": {
+            "user": 1
+          },
+          "options": {
+            "unique": true,
+            "background": true
+          }
+        }
+      ],
+      "timestamps": {
+        "createdAt": "created_at",
+        "updatedAt": "updated_at"
+      }
+    },
+    "PatientDoctorMapping": {
+      "collectionName": "patientdoctormappings",
+      "modelName": "PatientDoctorMapping",
+      "fields": [
+        {
+          "name": "patient_id",
+          "type": "ObjectId",
+          "required": true,
+          "ref": "User",
+          "index": true
+        },
+        {
+          "name": "doctor_id",
+          "type": "ObjectId",
+          "required": true,
+          "ref": "HealthcareProvider",
+          "index": true
+        },
+        {
+          "name": "stat",
+          "type": "String",
+          "default": "active",
+          "enum": [
+            "active",
+            "inactive"
+          ]
+        },
+        {
+          "name": "_id",
+          "type": "ObjectId"
+        },
+        {
+          "name": "created_at",
+          "type": "Date"
+        },
+        {
+          "name": "updated_at",
+          "type": "Date"
+        },
+        {
+          "name": "__v",
+          "type": "Number"
+        }
+      ],
+      "indexes": [
+        {
+          "fields": {
+            "patient_id": 1
+          },
+          "options": {
+            "background": true
+          }
+        },
+        {
+          "fields": {
+            "doctor_id": 1
+          },
+          "options": {
+            "background": true
+          }
+        },
+        {
+          "fields": {
+            "patient_id": 1,
+            "doctor_id": 1
+          },
+          "options": {
+            "unique": true,
+            "background": true
+          }
+        }
+      ],
+      "timestamps": {
+        "createdAt": "created_at",
+        "updatedAt": "updated_at"
+      }
+    },
+    "Goal": {
+      "collectionName": "goals",
+      "modelName": "Goal",
+      "fields": [
+        {
+          "name": "patient_id",
+          "type": "ObjectId",
+          "required": true,
+          "ref": "User",
+          "index": true
+        },
+        {
+          "name": "tracking_type",
+          "type": "String",
+          "required": true,
+          "enum": [
+            "weight",
+            "bmi",
+            "steps"
+          ]
+        },
+        {
+          "name": "target_value",
+          "type": "Number",
+          "required": true,
+          "min": 0
+        },
+        {
+          "name": "due_date",
+          "type": "Date",
+          "required": true
+        },
+        {
+          "name": "stat",
+          "type": "String",
+          "default": "active",
+          "enum": [
+            "active",
+            "completed",
+            "cancelled"
+          ],
+          "index": true
+        },
+        {
+          "name": "_id",
+          "type": "ObjectId"
+        },
+        {
+          "name": "created_at",
+          "type": "Date"
+        },
+        {
+          "name": "updated_at",
+          "type": "Date"
+        },
+        {
+          "name": "__v",
+          "type": "Number"
+        }
+      ],
+      "indexes": [
+        {
+          "fields": {
+            "patient_id": 1
+          },
+          "options": {
+            "background": true
+          }
+        },
+        {
+          "fields": {
+            "stat": 1
+          },
+          "options": {
+            "background": true
+          }
+        },
+        {
+          "fields": {
+            "patient_id": 1,
+            "stat": 1
+          },
+          "options": {
+            "background": true
+          }
+        }
+      ],
+      "timestamps": {
+        "createdAt": "created_at",
+        "updatedAt": "updated_at"
+      }
+    },
+    "GoalLog": {
+      "collectionName": "goallogs",
+      "modelName": "GoalLog",
+      "fields": [
+        {
+          "name": "goal_id",
+          "type": "ObjectId",
+          "required": true,
+          "ref": "Goal",
+          "index": true
+        },
+        {
+          "name": "patient_id",
+          "type": "ObjectId",
+          "required": true,
+          "ref": "User",
+          "index": true
+        },
+        {
+          "name": "date",
+          "type": "Date",
+          "required": true
+        },
+        {
+          "name": "actual_value",
+          "type": "Number",
+          "required": true,
+          "min": 0
+        },
+        {
+          "name": "_id",
+          "type": "ObjectId"
+        },
+        {
+          "name": "created_at",
+          "type": "Date"
+        },
+        {
+          "name": "__v",
+          "type": "Number"
+        }
+      ],
+      "indexes": [
+        {
+          "fields": {
+            "goal_id": 1
+          },
+          "options": {
+            "background": true
+          }
+        },
+        {
+          "fields": {
+            "patient_id": 1
+          },
+          "options": {
+            "background": true
+          }
+        },
+        {
+          "fields": {
+            "goal_id": 1,
+            "date": 1
+          },
+          "options": {
+            "unique": true,
+            "background": true
+          }
+        }
+      ],
+      "timestamps": {
+        "createdAt": "created_at",
+        "updatedAt": "updatedAt"
+      }
+    },
+    "TrackingRecord": {
+      "collectionName": "trackingrecords",
+      "modelName": "TrackingRecord",
+      "fields": [
+        {
+          "name": "value",
+          "type": "Number",
+          "required": true,
+          "min": 0
+        },
+        {
+          "name": "type",
+          "type": "String",
+          "required": true,
+          "enum": [
+            "weight",
+            "bmi"
+          ]
+        },
+        {
+          "name": "patient_id",
+          "type": "ObjectId",
+          "required": true,
+          "ref": "User",
+          "index": true
+        },
+        {
+          "name": "_id",
+          "type": "ObjectId"
+        },
+        {
+          "name": "created_at",
+          "type": "Date"
+        },
+        {
+          "name": "__v",
+          "type": "Number"
+        }
+      ],
+      "indexes": [
+        {
+          "fields": {
+            "patient_id": 1
+          },
+          "options": {
+            "background": true
+          }
+        },
+        {
+          "fields": {
+            "patient_id": 1,
+            "type": 1,
+            "created_at": -1
+          },
+          "options": {
+            "background": true
+          }
+        }
+      ],
+      "timestamps": {
+        "createdAt": "created_at",
+        "updatedAt": "updatedAt"
+      }
+    },
+    "PreventiveCareReminder": {
+      "collectionName": "preventivecarereminders",
+      "modelName": "PreventiveCareReminder",
+      "fields": [
+        {
+          "name": "patient_id",
+          "type": "ObjectId",
+          "required": true,
+          "ref": "User",
+          "index": true
+        },
+        {
+          "name": "reminder_type",
+          "type": "String",
+          "required": true,
+          "trim": true
+        },
+        {
+          "name": "due_date",
+          "type": "Date",
+          "required": true
+        },
+        {
+          "name": "is_completed",
+          "type": "Boolean",
+          "default": false
+        },
+        {
+          "name": "stat",
+          "type": "String",
+          "default": "active",
+          "enum": [
+            "active",
+            "completed"
+          ]
+        },
+        {
+          "name": "_id",
+          "type": "ObjectId"
+        },
+        {
+          "name": "created_at",
+          "type": "Date"
+        },
+        {
+          "name": "updated_at",
+          "type": "Date"
+        },
+        {
+          "name": "__v",
+          "type": "Number"
+        }
+      ],
+      "indexes": [
+        {
+          "fields": {
+            "patient_id": 1
+          },
+          "options": {
+            "background": true
+          }
+        },
+        {
+          "fields": {
+            "patient_id": 1,
+            "stat": 1
+          },
+          "options": {
+            "background": true
+          }
+        }
+      ],
+      "timestamps": {
+        "createdAt": "created_at",
+        "updatedAt": "updated_at"
+      }
+    },
+    "Notification": {
+      "collectionName": "notifications",
+      "modelName": "Notification",
+      "fields": [
+        {
+          "name": "user_id",
+          "type": "ObjectId",
+          "required": true,
+          "ref": "User",
+          "index": true
+        },
+        {
+          "name": "message",
+          "type": "String",
+          "required": true,
+          "trim": true
+        },
+        {
+          "name": "type",
+          "type": "String",
+          "default": "system",
+          "enum": [
+            "reminder",
+            "goal_update",
+            "system"
+          ]
+        },
+        {
+          "name": "is_read",
+          "type": "Boolean",
+          "default": false
+        },
+        {
+          "name": "_id",
+          "type": "ObjectId"
+        },
+        {
+          "name": "created_at",
+          "type": "Date"
+        },
+        {
+          "name": "__v",
+          "type": "Number"
+        }
+      ],
+      "indexes": [
+        {
+          "fields": {
+            "user_id": 1
+          },
+          "options": {
+            "background": true
+          }
+        },
+        {
+          "fields": {
+            "user_id": 1,
+            "is_read": 1,
+            "created_at": -1
+          },
+          "options": {
+            "background": true
+          }
+        }
+      ],
+      "timestamps": {
+        "createdAt": "created_at",
+        "updatedAt": "updatedAt"
+      }
+    },
+    "HealthTip": {
+      "collectionName": "healthtips",
+      "modelName": "HealthTip",
+      "fields": [
+        {
+          "name": "title",
+          "type": "String",
+          "required": true,
+          "trim": true
+        },
+        {
+          "name": "content",
+          "type": "String",
+          "required": true,
+          "trim": true
+        },
+        {
+          "name": "display_date",
+          "type": "Date",
+          "required": true,
+          "unique": true
+        },
+        {
+          "name": "stat",
+          "type": "String",
+          "default": "active",
+          "enum": [
+            "active",
+            "inactive"
+          ]
+        },
+        {
+          "name": "_id",
+          "type": "ObjectId"
+        },
+        {
+          "name": "created_at",
+          "type": "Date"
+        },
+        {
+          "name": "updated_at",
+          "type": "Date"
+        },
+        {
+          "name": "__v",
+          "type": "Number"
+        }
+      ],
+      "indexes": [
+        {
+          "fields": {
+            "display_date": 1
+          },
+          "options": {
+            "unique": true,
+            "background": true
+          }
+        },
+        {
+          "fields": {
+            "display_date": 1
+          },
+          "options": {
+            "unique": true,
+            "background": true
+          }
+        }
+      ],
+      "timestamps": {
+        "createdAt": "created_at",
+        "updatedAt": "updated_at"
+      }
+    },
+    "Category": {
+      "collectionName": "categories",
+      "modelName": "Category",
+      "fields": [
+        {
+          "name": "name",
+          "type": "String",
+          "required": true,
+          "unique": true,
+          "trim": true
+        },
+        {
+          "name": "_id",
+          "type": "ObjectId"
+        },
+        {
+          "name": "created_at",
+          "type": "Date"
+        },
+        {
+          "name": "updated_at",
+          "type": "Date"
+        },
+        {
+          "name": "__v",
+          "type": "Number"
+        }
+      ],
+      "indexes": [
+        {
+          "fields": {
+            "name": 1
+          },
+          "options": {
+            "unique": true,
+            "background": true
+          }
+        },
+        {
+          "fields": {
+            "name": 1
+          },
+          "options": {
+            "unique": true,
+            "background": true
+          }
+        }
+      ],
+      "timestamps": {
+        "createdAt": "created_at",
+        "updatedAt": "updated_at"
+      }
+    },
+    "AuditLog": {
+      "collectionName": "auditlogs",
+      "modelName": "AuditLog",
+      "fields": [
+        {
+          "name": "user_id",
+          "type": "ObjectId",
+          "required": true,
+          "ref": "User",
+          "index": true
+        },
+        {
+          "name": "action",
+          "type": "String",
+          "required": true,
+          "trim": true
+        },
+        {
+          "name": "_id",
+          "type": "ObjectId"
+        },
+        {
+          "name": "created_at",
+          "type": "Date"
+        },
+        {
+          "name": "__v",
+          "type": "Number"
+        }
+      ],
+      "indexes": [
+        {
+          "fields": {
+            "user_id": 1
+          },
+          "options": {
+            "background": true
+          }
+        },
+        {
+          "fields": {
+            "user_id": 1,
+            "created_at": -1
+          },
+          "options": {
+            "background": true
+          }
+        }
+      ],
+      "timestamps": {
+        "createdAt": "created_at",
+        "updatedAt": "updatedAt"
+      }
+    }
+  }
+}

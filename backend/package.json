@@ -1,0 +1,71 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Backend API server built with Express, TypeScript, and MVC architecture",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "start": "node dist/index.js",
+    "dev": "ts-node index.ts",
+    "dev:watch": "ts-node-dev --respawn --transpile-only index.ts",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "prestart": "npm run build",
+    "init:roles": "ts-node scripts/initRoles.ts",
+    "init:admin": "ts-node scripts/initAdmin.ts",
+    "init:care-categories": "ts-node scripts/initCareCategories.ts",
+    "init:all": "npm run init:roles && npm run init:admin && npm run init:care-categories",
+    "seed:data": "ts-node scripts/seedSampleData.ts",
+    "backup:schema": "ts-node scripts/backupSchema.ts",
+    "backup:database": "bash scripts/backupDatabase.sh",
+    "backup:all": "npm run backup:schema && npm run backup:database",
+    "job:goal-notifications": "ts-node scripts/runGoalNotificationJob.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "express",
+    "typescript",
+    "nodejs",
+    "api",
+    "backend",
+    "mvc"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.20.1",
+    "morgan": "^1.10.0",
+    "node-cron": "^4.2.1"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/mongoose": "^5.11.96",
+    "@types/morgan": "^1.9.9",
+    "@types/node": "^20.10.6",
+    "@types/node-cron": "^3.0.11",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  }
+}
