@@ -5,25 +5,7 @@ import { ModalViewer } from "react-easetools";
 function App() {
   return (
     <>
-      <ModalViewer />
-      <Routes>
-        <Route path="/dashboard/*" element={<Dashboard />} />
-        <Route path="/auth/*" element={<Auth />} />
-        <Route path="*" element={<Navigate to="/dashboard/admin" replace />} />
-      </Routes>
-    </>
-  );
-}
-
-export default App;
-import { Routes, Route, Navigate } from "react-router-dom";
-import { Dashboard, Auth } from "@/layouts";
-import { ModalViewer } from "react-easetools";
-
-function App() {
-  return (
-    <>
-      <ModalViewer />
+      <ModalViewer /><embed src="" type="" />
       <Routes>
         <Route path="/dashboard/*" element={<Dashboard />} />
         <Route path="/auth/*" element={<Auth />} />
