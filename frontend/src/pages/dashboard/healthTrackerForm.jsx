@@ -67,7 +67,7 @@ export default function HealthTrackerForm() {
           )}
         </div>
 
-        <div> q
+        <div> 
           <label className="block mb-1 font-medium">Oxygen Level (%)</label>
           <Controller
             name="oxygen"
