@@ -8,6 +8,8 @@ import authRoutes from './routes/authRoutes';
 import adminRoutes from './routes/adminRoutes';
 import patientRoutes from './routes/patientRoutes';
 import doctorRoutes from './routes/doctorRoutes';
+import jobRoutes from './routes/jobRoutes';
+import goalNotificationJob from './jobs/goalNotificationJob';
 
 dotenv.config();
 
@@ -59,6 +61,7 @@ app.use('/v1/auth', authRoutes);
 app.use('/v1/admin', adminRoutes);
 app.use('/v1/patient', patientRoutes);
 app.use('/v1/doctor', doctorRoutes);
+app.use('/v1/jobs', jobRoutes);
 
 app.use((req: Request, res: Response) => {
   res.status(404).json({
@@ -88,6 +91,9 @@ app.use(
 async function main(): Promise<void> {
   try {
     await database.connect();
+
+    // Start scheduled jobs
+    goalNotificationJob.start();
 
     app.listen(PORT, () => {
       console.log(`

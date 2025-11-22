@@ -151,8 +151,6 @@ export function PatientPrescription() {
           {/* ------------------------------------------------------------- */}
           {/* PATIENT HEADER */}
           {/* ------------------------------------------------------------- */}
-
-
           <div className="mb-10 flex items-center justify-between flex-wrap gap-6">
             <div className="flex items-center gap-6">
               <Avatar
@@ -201,7 +199,6 @@ export function PatientPrescription() {
           {/* ------------------------------------------------------------- */}
           {/* HEALTH CHARTS */}
           {/* ------------------------------------------------------------- */}
-
           <div className="mb-12 flex flex-col">
             <Typography variant="h6" color="blue-gray" className="mb-2">
               Health Monitor

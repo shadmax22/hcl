@@ -45,13 +45,13 @@ export const authenticate = (
 export const authorize = (allowedRoles: string[]) => {
   return async (req: any, res: Response, next: NextFunction): Promise<void> => {
     try {
-      if (!req.user) {
-        res.status(401).json({
-          error: 'Unauthorized',
-          message: 'User not authenticated',
-        });
-        return;
-      }
+    if (!req.user) {
+      res.status(401).json({
+        error: 'Unauthorized',
+        message: 'User not authenticated',
+      });
+      return;
+    }
 
       // Get user role from token (role name is stored in JWT payload)
       const userRole = req.user.role;
@@ -89,7 +89,7 @@ export const authorize = (allowedRoles: string[]) => {
 
       // Attach role name to request for use in controllers
       req.user.roleName = roleName;
-      next();
+    next();
     } catch (error) {
       console.error('Authorization error:', error);
       res.status(500).json({

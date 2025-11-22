@@ -107,7 +107,7 @@ class AuthController {
           stat: 'active',
         });
         await healthcareProvider.save();
-      }
+}
 
       // Generate token with role name
       const token = authService.generateToken(user, roleName);

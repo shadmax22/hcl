@@ -21,6 +21,7 @@
     "backup:schema": "ts-node scripts/backupSchema.ts",
     "backup:database": "bash scripts/backupDatabase.sh",
     "backup:all": "npm run backup:schema && npm run backup:database",
+    "job:goal-notifications": "ts-node scripts/runGoalNotificationJob.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -41,7 +42,8 @@
     "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.20.1",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "node-cron": "^4.2.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
@@ -51,6 +53,7 @@
     "@types/mongoose": "^5.11.96",
     "@types/morgan": "^1.9.9",
     "@types/node": "^20.10.6",
+    "@types/node-cron": "^3.0.11",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.3.3"

@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import User from '../models/User';
 import HealthcareProvider from '../models/HealthcareProvider';
 import Role from '../models/Role';
@@ -6,7 +6,7 @@ import authService from '../services/authService';
 import AuditLog from '../models/AuditLog';
 
 class AdminController {
-  async getAllUsers(req: any, res: Response): Promise<void> {
+  async getAllUsers(_req: any, res: Response): Promise<void> {
     try {
       const users = await User.find()
         .populate('role', 'role_name')
@@ -44,7 +44,7 @@ class AdminController {
     }
   }
 
-  async getAllDoctors(req: any, res: Response): Promise<void> {
+  async getAllDoctors(_req: any, res: Response): Promise<void> {
     try {
       const providers = await HealthcareProvider.find()
         .populate('user', 'name email phone_no')

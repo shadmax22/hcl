@@ -23,6 +23,11 @@ const TrackingRecordSchema: Schema = new Schema<any>(
       required: true,
       index: true,
     },
+    date: {
+      type: Date,
+      default: Date.now,
+      index: true,
+    },
   },
   {
     timestamps: {

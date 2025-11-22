@@ -1,7 +1,6 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import User from '../models/User';
 import Goal from '../models/Goal';
-import GoalLog from '../models/GoalLog';
 import TrackingRecord from '../models/TrackingRecord';
 import PreventiveCareReminder from '../models/PreventiveCareReminder';
 import Notification from '../models/Notification';
@@ -66,6 +65,30 @@ class PatientController {
     }
   }
 
+  async getTrackingRecordCategories(_req: any, res: Response): Promise<void> {
+    try {
+      const categories = [
+          { value: 'weight', label: 'Weight' },
+          { value: 'bmi', label: 'BMI' }, 
+          { value: 'steps', label: 'Steps' },
+          { value: 'sleep', label: 'Sleep' },
+          { value: 'water', label: 'Water' },
+          { value: 'exercise', label: 'Exercise' },
+      ];
+
+      res.status(200).json({
+        message: 'Tracking record categories retrieved successfully',
+        categories: categories,
+      });
+    } catch (error) {
+      console.error('Get tracking record categories error:', error);
+      res.status(500).json({
+        error: 'Server Error',
+        message: 'Failed to retrieve tracking record categories',
+      });
+    }
+  }
+
   async getTrackingRecords(req: any, res: Response): Promise<void> {
     try {
       const userId = req.user.userId;
@@ -90,6 +113,64 @@ class PatientController {
       res.status(500).json({
         error: 'Server Error',
         message: 'Failed to retrieve tracking records',
+      });
+    }
+  }
+
+  async addTrackingRecord(req: any, res: Response): Promise<void> {
+    try {
+      const userId = req.user.userId;
+      const { type, value, date } = req.body;
+
+      if (!type || value === undefined || value === null) {
+        res.status(400).json({
+          error: 'Validation Error',
+          message: 'type and value are required',
+        });
+        return;
+      }
+
+      if (!['weight', 'bmi'].includes(type)) {
+        res.status(400).json({
+          error: 'Validation Error',
+          message: 'type must be one of: weight, bmi',
+        });
+        return;
+      }
+
+      if (typeof value !== 'number' || value < 0) {
+        res.status(400).json({
+          error: 'Validation Error',
+          message: 'value must be a positive number',
+        });
+        return;
+      }
+
+      const trackingRecord = new TrackingRecord({
+        patient_id: userId,
+        type,
+        value,
+        date: date ? new Date(date) : new Date(),
+      });
+
+      await trackingRecord.save();
+
+      res.status(201).json({
+        message: 'Tracking record added successfully',
+        record: {
+          id: trackingRecord._id,
+          patient_id: trackingRecord.patient_id,
+          type: trackingRecord.type,
+          value: trackingRecord.value,
+          date: trackingRecord.date || trackingRecord.created_at,
+          created_at: trackingRecord.created_at,
+        },
+      });
+    } catch (error) {
+      console.error('Add tracking record error:', error);
+      res.status(500).json({
+        error: 'Server Error',
+        message: 'Failed to add tracking record',
       });
     }
   }

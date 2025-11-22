@@ -5,6 +5,7 @@ import PatientDoctorMapping from '../models/PatientDoctorMapping';
 import Goal from '../models/Goal';
 import GoalLog from '../models/GoalLog';
 import TrackingRecord from '../models/TrackingRecord';
+import Notification from '../models/Notification';
 
 class DoctorController {
   async getProfile(req: any, res: Response): Promise<void> {
@@ -289,6 +290,30 @@ class DoctorController {
       res.status(500).json({
         error: 'Server Error',
         message: 'Failed to retrieve patient goals',
+      });
+    }
+  }
+
+  async getNotifications(req: any, res: Response): Promise<void> {
+    try {
+      const userId = req.user.userId;
+
+      const notifications = await Notification.find({
+        user_id: userId,
+      })
+        .sort({ created_at: -1 })
+        .limit(50);
+
+      res.status(200).json({
+        message: 'Notifications retrieved successfully',
+        count: notifications.length,
+        notifications: notifications,
+      });
+    } catch (error) {
+      console.error('Get notifications error:', error);
+      res.status(500).json({
+        error: 'Server Error',
+        message: 'Failed to retrieve notifications',
       });
     }
   }

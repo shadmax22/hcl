@@ -9,6 +9,7 @@ router.get('/patients', authenticate, authorize(['healthcare_provider']), doctor
 router.get('/patients/:patientId', authenticate, authorize(['healthcare_provider']), doctorController.getPatientDetails.bind(doctorController));
 router.get('/patients/:patientId/goals', authenticate, authorize(['healthcare_provider']), doctorController.getPatientGoals.bind(doctorController));
 router.post('/patients/:patientId/goals', authenticate, authorize(['healthcare_provider']), doctorController.createGoalForPatient.bind(doctorController));
+router.get('/notifications', authenticate, authorize(['healthcare_provider']), doctorController.getNotifications.bind(doctorController));
 
 export default router;
 
