@@ -9,7 +9,7 @@ function App() {
       <Routes>
         <Route path="/dashboard/*" element={<Dashboard />} />
         <Route path="/auth/*" element={<Auth />} />
-        <Route path="*" element={<Navigate to="/dashboard/home" replace />} />
+        <Route path="*" element={<Navigate to="/dashboard/admin" replace />} />
       </Routes>
     </>
   );

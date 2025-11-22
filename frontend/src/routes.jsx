@@ -1,18 +1,65 @@
 import {
-  HomeIcon,
-  UserCircleIcon,
-  TableCellsIcon,
-  InformationCircleIcon,
   ServerStackIcon,
   RectangleStackIcon,
+  UserGroupIcon,
+  TableCellsIcon,
 } from "@heroicons/react/24/solid";
-import { Home, PatientPrescription, Tables, Notifications } from "@/pages/dashboard";
+import { AdminDashboard, DoctorsList, AddDoctor } from "@/pages/dashboard";
 import { SignIn, SignUp } from "@/pages/auth";
 import SignUpPatient from "./pages/auth/patient/sign-up";
-import HealthTrackerForm from "./pages/dashboard/healthTrackerForm";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
+};
+
+// Helper function to get user role from localStorage
+export const getUserRole = () => {
+  try {
+    const userStr = localStorage.getItem("user");
+    if (userStr) {
+      const user = JSON.parse(userStr);
+      return user.role || null;
+    }
+  } catch (error) {
+    console.error("Error getting user role:", error);
+  }
+  return null;
+};
+
+// Get filtered routes based on user role
+export const getRoutes = () => {
+  const userRole = getUserRole();
+  
+  // Admin routes - show admin dashboard and doctors list
+  if (userRole === "admin") {
+    return [
+      {
+        layout: "dashboard",
+        pages: [
+          {
+            icon: <UserGroupIcon {...icon} />,
+            name: "Dashboard",
+            path: "/admin",
+            element: <AdminDashboard />,
+          },
+          {
+            icon: <TableCellsIcon {...icon} />,
+            name: "Doctors List",
+            path: "/doctors",
+            element: <DoctorsList />,
+          },
+        ],
+      },
+    ];
+  }
+  
+  // Default: no dashboard routes (or you can add other roles here)
+  return [
+    {
+      layout: "dashboard",
+      pages: [],
+    },
+  ];
 };
 
 export const routes = [
@@ -20,34 +67,16 @@ export const routes = [
     layout: "dashboard",
     pages: [
       {
-        icon: <HomeIcon {...icon} />,
-        name: "dashboard",
-        path: "/home",
-        element: <Home />,
-      },
-      {
-        icon: <UserCircleIcon {...icon} />,
-        name: "profile",
-        path: "/profile",
-        element: <PatientPrescription />,
+        icon: <UserGroupIcon {...icon} />,
+        name: "Dashboard",
+        path: "/admin",
+        element: <AdminDashboard />,
       },
       {
         icon: <TableCellsIcon {...icon} />,
-        name: "tables",
-        path: "/tables",
-        element: <Tables />,
-      },
-      {
-        icon: <InformationCircleIcon {...icon} />,
-        name: "notifications",
-        path: "/notifications",
-        element: <Notifications />,
-      },
-      {
-        icon: <InformationCircleIcon {...icon} />,
-        name: "Health Tracker Form",
-        path: "/healthTrackerForm",
-        element: <HealthTrackerForm />,
+        name: "Doctors List",
+        path: "/doctors",
+        element: <DoctorsList />,
       },
     ],
   },

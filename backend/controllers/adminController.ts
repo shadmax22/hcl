@@ -2,6 +2,7 @@ import { Response } from 'express';
 import User from '../models/User';
 import HealthcareProvider from '../models/HealthcareProvider';
 import Role from '../models/Role';
+import HealthcareCategory from '../models/HealthcareCategory';
 import authService from '../services/authService';
 import AuditLog from '../models/AuditLog';
 
@@ -273,6 +274,77 @@ class AdminController {
       res.status(500).json({
         error: 'Server Error',
         message: 'Failed to create doctor',
+      });
+    }
+  }
+
+  async getCareCategories(_req: any, res: Response): Promise<void> {
+    try {
+      const categories = await HealthcareCategory.find({ stat: 'active' })
+        .select('_id name')
+        .sort({ name: 1 });
+
+      res.status(200).json({
+        message: 'Care categories retrieved successfully',
+        categories: categories,
+      });
+    } catch (error) {
+      console.error('Get care categories error:', error);
+      res.status(500).json({
+        error: 'Server Error',
+        message: 'Failed to retrieve care categories',
+      });
+    }
+  }
+
+  async createCareCategory(req: any, res: Response): Promise<void> {
+    try {
+      const { name }: any = req.body;
+
+      if (!name || !name.trim()) {
+        res.status(400).json({
+          error: 'Validation Error',
+          message: 'Category name is required',
+        });
+        return;
+      }
+
+      const existingCategory = await HealthcareCategory.findOne({
+        name: name.trim(),
+      });
+
+      if (existingCategory) {
+        res.status(409).json({
+          error: 'Conflict',
+          message: 'Category with this name already exists',
+        });
+        return;
+      }
+
+      const category = new HealthcareCategory({
+        name: name.trim(),
+        stat: 'active',
+      });
+
+      await category.save();
+
+      await AuditLog.create({
+        user_id: req.user.userId,
+        action: 'admin_create_care_category',
+      });
+
+      res.status(201).json({
+        message: 'Care category created successfully',
+        category: {
+          id: category._id,
+          name: category.name,
+        },
+      });
+    } catch (error) {
+      console.error('Create care category error:', error);
+      res.status(500).json({
+        error: 'Server Error',
+        message: 'Failed to create care category',
       });
     }
   }
