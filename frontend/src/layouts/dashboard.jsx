@@ -24,8 +24,8 @@ export function Dashboard() {
     setRoutes(filteredRoutes);
   }, []);
 
-  // Redirect non-admin users
-  if (userRole !== "admin") {
+  // Redirect users without valid roles
+  if (userRole !== "admin" && userRole !== "patient") {
     return <Navigate to="/auth/sign-in" replace />;
   }
 
@@ -36,7 +36,7 @@ export function Dashboard() {
         brandImg={
           sidenavType === "dark" ? "/img/logo-ct.png" : "/img/logo-ct-dark.png"
         }
-        brandName="Admin Dashboard"
+        brandName={userRole === "admin" ? "Admin Dashboard" : "Patient Dashboard"}
       />
       <div className="p-4 xl:ml-80">
         <DashboardNavbar />
@@ -59,7 +59,7 @@ export function Dashboard() {
               ))
           )}
           <Route path="/add-doctor" element={<AddDoctor />} />
-          <Route path="*" element={<Navigate to="/dashboard/admin" replace />} />
+          <Route path="*" element={<Navigate to={userRole === "admin" ? "/dashboard/admin" : "/dashboard/patient"} replace />} />
         </Routes>
         <div className="text-blue-gray-600">
           <Footer />

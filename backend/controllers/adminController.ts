@@ -348,6 +348,51 @@ class AdminController {
       });
     }
   }
+
+  async getStatistics(_req: any, res: Response): Promise<void> {
+    try {
+      // Get patient role
+      const patientRole = await Role.findOne({ role_name: 'patient' });
+      const doctorRole = await Role.findOne({ role_name: 'healthcare_provider' });
+
+      if (!patientRole || !doctorRole) {
+        res.status(500).json({
+          error: 'Server Error',
+          message: 'Roles not found',
+        });
+        return;
+      }
+
+      // Count patients
+      const patientCount = await User.countDocuments({
+        role: patientRole._id,
+        stat: 'active',
+      });
+
+      // Count doctors (healthcare providers)
+      const doctorCount = await HealthcareProvider.countDocuments({
+        stat: 'active',
+      });
+
+      // Count total active users
+      const totalUsers = await User.countDocuments({ stat: 'active' });
+
+      res.status(200).json({
+        message: 'Statistics retrieved successfully',
+        statistics: {
+          patients: patientCount,
+          doctors: doctorCount,
+          totalUsers: totalUsers,
+        },
+      });
+    } catch (error) {
+      console.error('Get statistics error:', error);
+      res.status(500).json({
+        error: 'Server Error',
+        message: 'Failed to retrieve statistics',
+      });
+    }
+  }
 }
 
 export default new AdminController();

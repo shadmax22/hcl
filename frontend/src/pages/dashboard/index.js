@@ -5,3 +5,4 @@ export * from "@/pages/dashboard/notifications";
 export * from "@/pages/dashboard/admin";
 export * from "@/pages/dashboard/doctorsList";
 export * from "@/pages/dashboard/addDoctor";
+export * from "@/pages/dashboard/patientDashboard";

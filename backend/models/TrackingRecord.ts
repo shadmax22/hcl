@@ -15,7 +15,7 @@ const TrackingRecordSchema: Schema = new Schema<any>(
     type: {
       type: String,
       required: true,
-      enum: ['weight', 'bmi'],
+      enum: ['weight', 'height', 'bmi', 'blood_pressure_systolic', 'blood_pressure_diastolic', 'blood_pressure', 'heart_rate', 'steps', 'sleep', 'water', 'exercise'],
     },
     patient_id: {
       type: Schema.Types.ObjectId,

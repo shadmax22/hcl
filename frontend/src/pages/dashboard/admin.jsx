@@ -9,15 +9,40 @@ import {
 } from "@material-tailwind/react";
 import { useState, useEffect } from "react";
 import api from "../../../axios.js";
+import { chartsConfig } from "@/configs";
+import Chart from "react-apexcharts";
+import { ClockIcon } from "@heroicons/react/24/solid";
 
 export function AdminDashboard() {
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [statistics, setStatistics] = useState({
+    patients: 0,
+    doctors: 0,
+    totalUsers: 0,
+  });
+  const [statsLoading, setStatsLoading] = useState(true);
 
   useEffect(() => {
     fetchDoctors();
+    fetchStatistics();
   }, []);
+
+  const fetchStatistics = async () => {
+    try {
+      setStatsLoading(true);
+      const response = await api.get("/v1/admin/statistics");
+      
+      if (response.data && response.data.statistics) {
+        setStatistics(response.data.statistics);
+      }
+    } catch (err) {
+      console.error("Error fetching statistics:", err);
+    } finally {
+      setStatsLoading(false);
+    }
+  };
 
   const fetchDoctors = async () => {
     try {
@@ -63,6 +88,50 @@ export function AdminDashboard() {
     });
   };
 
+  // Create chart configuration for doctors vs patients
+  const statisticsChart = {
+    type: "bar",
+    height: 220,
+    series: [
+      {
+        name: "Count",
+        data: [statistics.doctors, statistics.patients],
+      },
+    ],
+    options: {
+      ...chartsConfig,
+      colors: ["#0288d1", "#66bb6a"],
+      plotOptions: {
+        bar: {
+          columnWidth: "40%",
+          borderRadius: 5,
+        },
+      },
+      xaxis: {
+        ...chartsConfig.xaxis,
+        categories: ["Doctors", "Patients"],
+      },
+      yaxis: {
+        ...chartsConfig.yaxis,
+        min: 0,
+        forceNiceScale: true,
+      },
+      tooltip: {
+        ...chartsConfig.tooltip,
+        y: {
+          formatter: function (val) {
+            return val + " users";
+          },
+        },
+      },
+    },
+  };
+
+  const handleRefresh = () => {
+    fetchDoctors();
+    fetchStatistics();
+  };
+
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
       <div className="flex justify-between items-center">
@@ -70,13 +139,66 @@ export function AdminDashboard() {
           Admin Dashboard
         </Typography>
         <Button
-          onClick={fetchDoctors}
-          disabled={loading}
+          onClick={handleRefresh}
+          disabled={loading || statsLoading}
           size="sm"
           variant="outlined"
         >
-          {loading ? "Refreshing..." : "Refresh"}
+          {loading || statsLoading ? "Refreshing..." : "Refresh"}
         </Button>
+      </div>
+
+      {/* Statistics Chart */}
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+        <Card className="border border-blue-gray-100 shadow-sm">
+          <CardHeader variant="gradient" color="white" floated={false} shadow={false}>
+            <Chart {...statisticsChart} />
+          </CardHeader>
+          <CardBody className="px-6 pt-0">
+            <Typography variant="h6" color="blue-gray">
+              Users Overview
+            </Typography>
+            <Typography variant="small" className="font-normal text-blue-gray-600">
+              Total count of doctors and patients in the system
+            </Typography>
+          </CardBody>
+          <CardBody className="border-t border-blue-gray-50 px-6 py-5">
+            <Typography variant="small" className="flex items-center font-normal text-blue-gray-600">
+              <ClockIcon strokeWidth={2} className="h-4 w-4 text-blue-gray-400 mr-2" />
+              {statsLoading ? "Loading..." : `Total: ${statistics.totalUsers} active users`}
+            </Typography>
+          </CardBody>
+        </Card>
+
+        {/* Statistics Cards */}
+        <div className="grid grid-cols-1 gap-4">
+          <Card className="border border-blue-gray-100 shadow-sm">
+            <CardBody className="p-6">
+              <Typography variant="h6" color="blue-gray" className="mb-2">
+                Doctors
+              </Typography>
+              <Typography variant="h3" color="blue" className="mb-1">
+                {statsLoading ? "..." : statistics.doctors}
+              </Typography>
+              <Typography variant="small" className="font-normal text-blue-gray-600">
+                Active healthcare providers
+              </Typography>
+            </CardBody>
+          </Card>
+          <Card className="border border-blue-gray-100 shadow-sm">
+            <CardBody className="p-6">
+              <Typography variant="h6" color="blue-gray" className="mb-2">
+                Patients
+              </Typography>
+              <Typography variant="h3" color="green" className="mb-1">
+                {statsLoading ? "..." : statistics.patients}
+              </Typography>
+              <Typography variant="small" className="font-normal text-blue-gray-600">
+                Active patients in the system
+              </Typography>
+            </CardBody>
+          </Card>
+        </div>
       </div>
 
       <Card>

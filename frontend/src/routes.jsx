@@ -3,8 +3,9 @@ import {
   RectangleStackIcon,
   UserGroupIcon,
   TableCellsIcon,
+  ChartBarIcon,
 } from "@heroicons/react/24/solid";
-import { AdminDashboard, DoctorsList, AddDoctor } from "@/pages/dashboard";
+import { AdminDashboard, DoctorsList, AddDoctor, PatientDashboard } from "@/pages/dashboard";
 import { SignIn, SignUp } from "@/pages/auth";
 import SignUpPatient from "./pages/auth/patient/sign-up";
 
@@ -47,6 +48,23 @@ export const getRoutes = () => {
             name: "Doctors List",
             path: "/doctors",
             element: <DoctorsList />,
+          },
+        ],
+      },
+    ];
+  }
+  
+  // Patient routes - show patient dashboard with tracking records
+  if (userRole === "patient") {
+    return [
+      {
+        layout: "dashboard",
+        pages: [
+          {
+            icon: <ChartBarIcon {...icon} />,
+            name: "My Health Tracking",
+            path: "/patient",
+            element: <PatientDashboard />,
           },
         ],
       },

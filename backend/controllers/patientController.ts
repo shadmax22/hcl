@@ -68,12 +68,17 @@ class PatientController {
   async getTrackingRecordCategories(_req: any, res: Response): Promise<void> {
     try {
       const categories = [
-          { value: 'weight', label: 'Weight' },
+          { value: 'weight', label: 'Weight (kg)' },
+          { value: 'height', label: 'Height (cm)' },
           { value: 'bmi', label: 'BMI' }, 
+          { value: 'blood_pressure_systolic', label: 'Blood Pressure - Systolic (mmHg)' },
+          { value: 'blood_pressure_diastolic', label: 'Blood Pressure - Diastolic (mmHg)' },
+          { value: 'blood_pressure', label: 'Blood Pressure (mmHg)' },
+          { value: 'heart_rate', label: 'Heart Rate (bpm)' },
           { value: 'steps', label: 'Steps' },
-          { value: 'sleep', label: 'Sleep' },
-          { value: 'water', label: 'Water' },
-          { value: 'exercise', label: 'Exercise' },
+          { value: 'sleep', label: 'Sleep (hours)' },
+          { value: 'water', label: 'Water (liters)' },
+          { value: 'exercise', label: 'Exercise (minutes)' },
       ];
 
       res.status(200).json({
@@ -130,10 +135,11 @@ class PatientController {
         return;
       }
 
-      if (!['weight', 'bmi'].includes(type)) {
+      const validTypes = ['weight', 'height', 'bmi', 'blood_pressure_systolic', 'blood_pressure_diastolic', 'blood_pressure', 'heart_rate', 'steps', 'sleep', 'water', 'exercise'];
+      if (!validTypes.includes(type)) {
         res.status(400).json({
           error: 'Validation Error',
-          message: 'type must be one of: weight, bmi',
+          message: `type must be one of: ${validTypes.join(', ')}`,
         });
         return;
       }
@@ -171,6 +177,104 @@ class PatientController {
       res.status(500).json({
         error: 'Server Error',
         message: 'Failed to add tracking record',
+      });
+    }
+  }
+
+  async updateTrackingRecord(req: any, res: Response): Promise<void> {
+    try {
+      const userId = req.user.userId;
+      const { id } = req.params;
+      const { type, value, date } = req.body;
+
+      const trackingRecord = await TrackingRecord.findOne({
+        _id: id,
+        patient_id: userId,
+      });
+
+      if (!trackingRecord) {
+        res.status(404).json({
+          error: 'Not Found',
+          message: 'Tracking record not found',
+        });
+        return;
+      }
+
+      if (type !== undefined) {
+        const validTypes = ['weight', 'height', 'bmi', 'blood_pressure_systolic', 'blood_pressure_diastolic', 'blood_pressure', 'heart_rate', 'steps', 'sleep', 'water', 'exercise'];
+        if (!validTypes.includes(type)) {
+          res.status(400).json({
+            error: 'Validation Error',
+            message: `type must be one of: ${validTypes.join(', ')}`,
+          });
+          return;
+        }
+        trackingRecord.type = type;
+      }
+
+      if (value !== undefined && value !== null) {
+        if (typeof value !== 'number' || value < 0) {
+          res.status(400).json({
+            error: 'Validation Error',
+            message: 'value must be a positive number',
+          });
+          return;
+        }
+        trackingRecord.value = value;
+      }
+
+      if (date !== undefined) {
+        trackingRecord.date = new Date(date);
+      }
+
+      await trackingRecord.save();
+
+      res.status(200).json({
+        message: 'Tracking record updated successfully',
+        record: {
+          id: trackingRecord._id,
+          patient_id: trackingRecord.patient_id,
+          type: trackingRecord.type,
+          value: trackingRecord.value,
+          date: trackingRecord.date || trackingRecord.created_at,
+          created_at: trackingRecord.created_at,
+        },
+      });
+    } catch (error) {
+      console.error('Update tracking record error:', error);
+      res.status(500).json({
+        error: 'Server Error',
+        message: 'Failed to update tracking record',
+      });
+    }
+  }
+
+  async deleteTrackingRecord(req: any, res: Response): Promise<void> {
+    try {
+      const userId = req.user.userId;
+      const { id } = req.params;
+
+      const trackingRecord = await TrackingRecord.findOneAndDelete({
+        _id: id,
+        patient_id: userId,
+      });
+
+      if (!trackingRecord) {
+        res.status(404).json({
+          error: 'Not Found',
+          message: 'Tracking record not found',
+        });
+        return;
+      }
+
+      res.status(200).json({
+        message: 'Tracking record deleted successfully',
+      });
+    } catch (error) {
+      console.error('Delete tracking record error:', error);
+      res.status(500).json({
+        error: 'Server Error',
+        message: 'Failed to delete tracking record',
       });
     }
   }
