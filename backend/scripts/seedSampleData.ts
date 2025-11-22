@@ -213,14 +213,21 @@ async function seedSampleData(): Promise<void> {
         console.log(`   ⏭️  Patient "${patientData.name}" already exists. Skipping...`);
         createdPatients.push(existingPatient);
       } else {
+        // Hash password before creating user
         const hashedPassword = await authService.hashPassword(patientData.password);
         const patient = new User({
-          ...patientData,
-          password: hashedPassword,
+          name: patientData.name,
+          email: patientData.email,
+          password: hashedPassword, // Use hashed password, not plain text
+          phone_no: patientData.phone_no,
+          DOB: patientData.DOB,
+          gender: patientData.gender,
+          role: patientData.role,
+          stat: 'active',
         });
         await patient.save();
         createdPatients.push(patient);
-        console.log(`   ✓ Created patient: ${patientData.name}`);
+        console.log(`   ✓ Created patient: ${patientData.name} (password hashed)`);
       }
     }
 
@@ -235,18 +242,20 @@ async function seedSampleData(): Promise<void> {
         console.log(`   ⏭️  Doctor user "${doctorData.name}" already exists. Skipping user creation...`);
         doctorUser = existingUser;
       } else {
+        // Hash password before creating user
         const hashedPassword = await authService.hashPassword(doctorData.password);
         doctorUser = new User({
           name: doctorData.name,
           email: doctorData.email,
-          password: hashedPassword,
+          password: hashedPassword, // Use hashed password, not plain text
           phone_no: doctorData.phone_no,
           DOB: doctorData.DOB,
           gender: doctorData.gender,
           role: doctorData.role,
+          stat: 'active',
         });
         await doctorUser.save();
-        console.log(`   ✓ Created doctor user: ${doctorData.name}`);
+        console.log(`   ✓ Created doctor user: ${doctorData.name} (password hashed)`);
       }
 
       // Create healthcare provider record
