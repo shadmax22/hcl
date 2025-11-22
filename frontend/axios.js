@@ -2,6 +2,7 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_ENDPOINT || "http://localhost:3000",
+<<<<<<< HEAD
 });
 
  
@@ -29,6 +30,8 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL: process.env.REACT_APP_API_ENDPOINT,
+=======
+>>>>>>> ab719e8 (Seeding of Data)
 });
 
  
