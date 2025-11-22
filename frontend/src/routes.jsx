@@ -11,6 +11,8 @@ import AdminDashboard from "./pages/dashboard/admin/AdminDashboard";
 import PatientDashboard from "./pages/dashboard/patientDashboard";
 import DoctorsList from "./pages/dashboard/doctorsList";
 import DoctorDashboard from "./pages/dashboard/doctors/DoctorDashboard";
+import { PatientsProfiles } from "./components/Patients/PatientsProfiles";
+import { Notifications } from "./pages/dashboard";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -52,6 +54,12 @@ export const getRoutes = () => {
             path: "/doctors",
             element: <DoctorsList />,
           },
+          {
+            icon: <TableCellsIcon {...icon} />,
+            name: "Notifications",
+            path: "/notifications",
+            element: <Notifications />,
+          },
         ],
       },
     ];
@@ -62,10 +70,22 @@ export const getRoutes = () => {
         layout: "dashboard",
         pages: [
           {
-            icon: <ChartBarIcon {...icon} />,
-            name: "My Health Tracking",
-            path: "/doctor",
+            icon: <UserGroupIcon {...icon} />,
+            name: "Dashboard",
+            path: "/admin",
             element: <DoctorDashboard />,
+          },
+          {
+            icon: <TableCellsIcon {...icon} />,
+            name: "Patients Management",
+            path: "/patients",
+            element: <PatientsProfiles />,
+          },
+          {
+            icon: <TableCellsIcon {...icon} />,
+            name: "Notifications",
+            path: "/notifications",
+            element: <Notifications />,
           },
         ],
       },
@@ -78,10 +98,16 @@ export const getRoutes = () => {
         layout: "dashboard",
         pages: [
           {
-            icon: <ChartBarIcon {...icon} />,
-            name: "My Health Tracking",
-            path: "/patient",
+            icon: <UserGroupIcon {...icon} />,
+            name: "Dashboard",
+            path: "/admin",
             element: <PatientDashboard />,
+          },
+          {
+            icon: <TableCellsIcon {...icon} />,
+            name: "Notifications",
+            path: "/notifications",
+            element: <Notifications />,
           },
         ],
       },

@@ -1,4 +1,4 @@
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 import {
   Navbar,
   Typography,
@@ -31,7 +31,7 @@ export function DashboardNavbar() {
   const { fixedNavbar, openSidenav } = controller;
   const { pathname } = useLocation();
   const [layout, page] = pathname.split("/").filter((el) => el !== "");
-
+  const navigate = useNavigate();
   return (
     <Navbar
       color={fixedNavbar ? "white" : "transparent"}
@@ -160,13 +160,16 @@ export function DashboardNavbar() {
               </MenuItem>
             </MenuList>
           </Menu>
-          <IconButton
-            variant="text"
+          <Button
             color="blue-gray"
-            onClick={() => setOpenConfigurator(dispatch, true)}
+            onClick={() => {
+              localStorage.removeItem("user");
+              localStorage.removeItem("accessToken");
+              navigate("/auth/sign-in");
+            }}
           >
-            <Cog6ToothIcon className="h-5 w-5 text-blue-gray-500" />
-          </IconButton>
+          LOG-OUT
+          </Button>
         </div>
       </div>
     </Navbar>

@@ -218,11 +218,12 @@ export function PatientDashboard() {
               />
             </div>
             <div className="flex gap-2 mt-4">
-              <Button onClick={handleAdd} size="sm" color="green">
+              <Button onClick={handleAdd} className="flex gap-2 items-center" size="sm" color="green">
                 <CheckIcon className="h-4 w-4 mr-1" />
                 Save
               </Button>
               <Button
+              className="flex gap-2 items-center"
                 onClick={() => {
                   setShowAddForm(false);
                   setAddForm({ type: "", value: "", date: "" });

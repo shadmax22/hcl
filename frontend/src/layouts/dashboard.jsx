@@ -25,7 +25,7 @@ export function Dashboard() {
   }, []);
 
   // Redirect non-admin users
-  if (userRole !== "admin") {
+  if (userRole !== "admin" && userRole !== "healthcare_provider" && userRole !== "patient") {
     return <Navigate to="/auth/sign-in" replace />;
   }
 
