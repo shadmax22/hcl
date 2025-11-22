@@ -6,7 +6,7 @@ import {
   ServerStackIcon,
   RectangleStackIcon,
 } from "@heroicons/react/24/solid";
-import { Home, Profile, Tables, Notifications } from "@/pages/dashboard";
+import { Home, PatientPrescription, Tables, Notifications } from "@/pages/dashboard";
 import { SignIn, SignUp } from "@/pages/auth";
 import SignUpPatient from "./pages/auth/patient/sign-up";
 import HealthTrackerForm from "./pages/dashboard/healthTrackerForm";
@@ -29,7 +29,7 @@ export const routes = [
         icon: <UserCircleIcon {...icon} />,
         name: "profile",
         path: "/profile",
-        element: <Profile />,
+        element: <PatientPrescription />,
       },
       {
         icon: <TableCellsIcon {...icon} />,

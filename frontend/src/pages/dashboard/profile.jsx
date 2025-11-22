@@ -2,223 +2,311 @@ import {
   Card,
   CardBody,
   CardHeader,
-  CardFooter,
   Avatar,
   Typography,
   Tabs,
   TabsHeader,
   Tab,
-  Switch,
-  Tooltip,
-  Button,
+  Chip,
 } from "@material-tailwind/react";
 import {
   HomeIcon,
   ChatBubbleLeftEllipsisIcon,
   Cog6ToothIcon,
-  PencilIcon,
+  ClockIcon,
 } from "@heroicons/react/24/solid";
-import { Link } from "react-router-dom";
-import { ProfileInfoCard, MessageCard } from "@/widgets/cards";
-import { platformSettingsData, conversationsData, projectsData } from "@/data";
+import { StatisticsChart } from "@/widgets/charts";
+import { chartsConfig } from "@/configs";
+import { useState } from "react";
 
-export function Profile() {
+export function PatientPrescription() {
+
+  const [activeTab, setActiveTab] = useState("info");
+
+  // -----------------------------
+  // ALL DATA FROM ONE SOURCE
+  // -----------------------------
+  const expected_data = {
+    patient: {
+      name: "Shad Ali",
+      age: 20,
+      gender: "Male",
+      avatar: "/img/bruce-mars.jpeg",
+      blood_group: "O+",
+      last_visit: "21 Nov 2025",
+      doctor: "Dr. Ritesh Sharma",
+    },
+    conversations: [
+      {
+        sender: "doctor",
+        name: "Dr. Ritesh",
+        avatar: "/img/team-1.jpeg",
+        message: "Hello Shad, how are you feeling today?",
+        time: "10:20 AM",
+      },
+      {
+        sender: "patient",
+        name: "Shad",
+        avatar: "/img/bruce-mars.jpeg",
+        message: "Doctor, my chest feels tight today.",
+        time: "10:22 AM",
+      },
+      {
+        sender: "doctor",
+        name: "Dr. Ritesh",
+        avatar: "/img/team-1.jpeg",
+        message: "Take deep breaths. I will update your prescription.",
+        time: "10:25 AM",
+      }
+    ],
+
+    charts: [
+      {
+        title: "Daily Steps",
+        description: "Your activity today",
+        footer: "Updated just now",
+        series: [2200, 3500, 5600, 8900, 7600, 9000, 12000],
+        x: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        color: "#0288d1",
+      },
+      {
+        title: "Heartbeat",
+        description: "Average bpm (Resting)",
+        footer: "Updated 2 min ago",
+        series: [72, 75, 71, 70, 74, 72, 73],
+        x: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        color: "#ef5350",
+      },
+      {
+        title: "Oxygen Level",
+        description: "O2 % saturation levels",
+        footer: "Updated 1 hr ago",
+        series: [97, 96, 97, 98, 98, 97, 96],
+        x: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        color: "#66bb6a",
+      },
+    ],
+
+    goals: [
+      {
+        title: "Weight Gain",
+        target: "65 kg",
+        status: "active",
+        due_date: "20 Dec 2025",
+      },
+      {
+        title: "Daily Steps",
+        target: "10,000 steps",
+        status: "completed",
+        due_date: "15 Nov 2025",
+      },
+      {
+        title: "BMI Improvement",
+        target: "20",
+        status: "active",
+        due_date: "05 Jan 2026",
+      },
+    ],
+
+    prescriptions: [
+      {
+        medicine: "Paracetamol 650mg",
+        dosage: "1 tablet after lunch",
+        days: "5 days",
+        doctor: "Dr. Ritesh",
+        date: "19 Nov 2025",
+      },
+      {
+        medicine: "Azithromycin 500mg",
+        dosage: "1 tablet daily",
+        days: "3 days",
+        doctor: "Dr. Kumar",
+        date: "12 Nov 2025",
+      },
+    ],
+  };
+
+  // CHART CONFIG TRANSFORM
+  const makeChart = (item) => ({
+    type: "line",
+    height: 220,
+    series: [{ name: item.title, data: item.series }],
+    options: {
+      ...chartsConfig,
+      colors: [item.color],
+      stroke: { lineCap: "round" },
+      markers: { size: 5 },
+      xaxis: { ...chartsConfig.xaxis, categories: item.x },
+    },
+  });
+
+
+
   return (
     <>
-      <div className="relative mt-8 h-72 w-full overflow-hidden rounded-xl bg-[url('/img/background-image.png')] bg-cover	bg-center">
-        <div className="absolute inset-0 h-full w-full bg-gray-900/75" />
-      </div>
-      <Card className="mx-3 -mt-16 mb-6 lg:mx-4 border border-blue-gray-100">
+      <Card className="mb-6 border border-blue-gray-100">
         <CardBody className="p-4">
+
+          {/* ------------------------------------------------------------- */}
+          {/* PATIENT HEADER */}
+          {/* ------------------------------------------------------------- */}
           <div className="mb-10 flex items-center justify-between flex-wrap gap-6">
             <div className="flex items-center gap-6">
               <Avatar
-                src="/img/bruce-mars.jpeg"
-                alt="bruce-mars"
+                src={expected_data.patient.avatar}
+                alt={expected_data.patient.name}
                 size="xl"
                 variant="rounded"
                 className="rounded-lg shadow-lg shadow-blue-gray-500/40"
               />
               <div>
                 <Typography variant="h5" color="blue-gray" className="mb-1">
-                  Richard Davis
+                  {expected_data.patient.name}
                 </Typography>
-                <Typography
-                  variant="small"
-                  className="font-normal text-blue-gray-600"
-                >
-                  CEO / Co-Founder
+                <Typography variant="small" className="font-normal text-blue-gray-600">
+                  {expected_data.patient.gender} • {expected_data.patient.age} yrs • Blood {expected_data.patient.patient}
+                </Typography>
+                <Typography variant="small" className="font-normal text-blue-gray-600">
+                  Consulting: {expected_data.patient.doctor}
                 </Typography>
               </div>
             </div>
+
             <div className="w-96">
-              <Tabs value="app">
+              <Tabs value={activeTab} className="w-96">
                 <TabsHeader>
-                  <Tab value="app">
-                    <HomeIcon className="-mt-1 mr-2 inline-block h-5 w-5" />
-                    App
+                  <Tab value="info" onClick={() => setActiveTab("info")}>
+                    <HomeIcon className="-mt-1 mr-2 h-5 w-5" /> Overview
                   </Tab>
-                  <Tab value="message">
-                    <ChatBubbleLeftEllipsisIcon className="-mt-0.5 mr-2 inline-block h-5 w-5" />
-                    Message
+                  <Tab value="chat" onClick={() => setActiveTab("chat")}>
+                    <ChatBubbleLeftEllipsisIcon className="-mt-0.5 mr-2 h-5 w-5" /> Chat
                   </Tab>
-                  <Tab value="settings">
-                    <Cog6ToothIcon className="-mt-1 mr-2 inline-block h-5 w-5" />
-                    Settings
+                  <Tab value="settings" onClick={() => setActiveTab("settings")}>
+                    <Cog6ToothIcon className="-mt-1 mr-2 h-5 w-5" /> Settings
                   </Tab>
                 </TabsHeader>
               </Tabs>
+
             </div>
           </div>
-          <div className="gird-cols-1 mb-12 grid gap-12 px-4 lg:grid-cols-2 xl:grid-cols-3">
-            <div>
-              <Typography variant="h6" color="blue-gray" className="mb-3">
-                Platform Settings
-              </Typography>
-              <div className="flex flex-col gap-12">
-                {platformSettingsData.map(({ title, options }) => (
-                  <div key={title}>
-                    <Typography className="mb-4 block text-xs font-semibold uppercase text-blue-gray-500">
-                      {title}
-                    </Typography>
-                    <div className="flex flex-col gap-6">
-                      {options.map(({ checked, label }) => (
-                        <Switch
-                          key={label}
-                          id={label}
-                          label={label}
-                          defaultChecked={checked}
-                          labelProps={{
-                            className: "text-sm font-normal text-blue-gray-500",
-                          }}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <ProfileInfoCard
-              title="Profile Information"
-              description="Hi, I'm Alec Thompson, Decisions: If you can't decide, the answer is no. If two equally difficult paths, choose the one more painful in the short term (pain avoidance is creating an illusion of equality)."
-              details={{
-                "first name": "Alec M. Thompson",
-                mobile: "(44) 123 1234 123",
-                email: "alecthompson@mail.com",
-                location: "USA",
-                social: (
-                  <div className="flex items-center gap-4">
-                    <i className="fa-brands fa-facebook text-blue-700" />
-                    <i className="fa-brands fa-twitter text-blue-400" />
-                    <i className="fa-brands fa-instagram text-purple-500" />
-                  </div>
-                ),
-              }}
-              action={
-                <Tooltip content="Edit Profile">
-                  <PencilIcon className="h-4 w-4 cursor-pointer text-blue-gray-500" />
-                </Tooltip>
-              }
-            />
-            <div>
-              <Typography variant="h6" color="blue-gray" className="mb-3">
-                Platform Settings
-              </Typography>
-              <ul className="flex flex-col gap-6">
-                {conversationsData.map((props) => (
-                  <MessageCard
-                    key={props.name}
-                    {...props}
-                    action={
-                      <Button variant="text" size="sm">
-                        reply
-                      </Button>
-                    }
-                  />
-                ))}
-              </ul>
-            </div>
-          </div>
-          <div className="px-4 pb-4">
+
+          {/* ------------------------------------------------------------- */}
+          {/* HEALTH CHARTS */}
+          {/* ------------------------------------------------------------- */}
+          <div className="mb-12 flex flex-col">
             <Typography variant="h6" color="blue-gray" className="mb-2">
-              Projects
+              Health Monitor
             </Typography>
-            <Typography
-              variant="small"
-              className="font-normal text-blue-gray-500"
-            >
-              Architects design houses
-            </Typography>
-            <div className="mt-6 grid grid-cols-1 gap-12 md:grid-cols-2 xl:grid-cols-4">
-              {projectsData.map(
-                ({ img, title, description, tag, route, members }) => (
-                  <Card key={title} color="transparent" shadow={false}>
-                    <CardHeader
-                      floated={false}
-                      color="gray"
-                      className="mx-0 mt-0 mb-4 h-64 xl:h-40"
-                    >
-                      <img
-                        src={img}
-                        alt={title}
-                        className="h-full w-full object-cover"
-                      />
-                    </CardHeader>
-                    <CardBody className="py-0 px-1">
-                      <Typography
-                        variant="small"
-                        className="font-normal text-blue-gray-500"
-                      >
-                        {tag}
-                      </Typography>
-                      <Typography
-                        variant="h5"
-                        color="blue-gray"
-                        className="mt-1 mb-2"
-                      >
-                        {title}
-                      </Typography>
-                      <Typography
-                        variant="small"
-                        className="font-normal text-blue-gray-500"
-                      >
-                        {description}
-                      </Typography>
-                    </CardBody>
-                    <CardFooter className="mt-6 flex items-center justify-between py-0 px-1">
-                      <Link to={route}>
-                        <Button variant="outlined" size="sm">
-                          view project
-                        </Button>
-                      </Link>
-                      <div>
-                        {members.map(({ img, name }, key) => (
-                          <Tooltip key={name} content={name}>
-                            <Avatar
-                              src={img}
-                              alt={name}
-                              size="xs"
-                              variant="circular"
-                              className={`cursor-pointer border-2 border-white ${
-                                key === 0 ? "" : "-ml-2.5"
-                              }`}
-                            />
-                          </Tooltip>
-                        ))}
-                      </div>
-                    </CardFooter>
-                  </Card>
-                )
-              )}
+
+            <div className="grid grid-cols-1 gap-y-12 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
+              {expected_data.charts.map((chart, index) => (
+                <StatisticsChart
+                  key={index}
+                  color="white"
+                  title={chart.title}
+                  description={chart.description}
+                  footer={
+                    <Typography variant="small" className="flex items-center font-normal text-blue-gray-600">
+                      <ClockIcon strokeWidth={2} className="h-4 w-4 text-blue-gray-400" />
+                      &nbsp;{chart.footer}
+                    </Typography>
+                  }
+                  chart={makeChart(chart)}
+                />
+              ))}
             </div>
           </div>
+
+          {/* ------------------------------------------------------------- */}
+          {/* GOALS */}
+          {/* ------------------------------------------------------------- */}
+          <Card className="mb-12">
+            <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
+              <Typography variant="h6" color="white">
+                Goals
+              </Typography>
+            </CardHeader>
+
+            <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
+              <table className="w-full min-w-[640px] table-auto">
+                <thead>
+                  <tr>
+                    {["Goal", "Target", "Status", "Due Date"].map((h) => (
+                      <th key={h} className="border-b border-blue-gray-50 py-3 px-5 text-left">
+                        <Typography variant="small" className="text-[11px] font-bold uppercase text-blue-gray-400">
+                          {h}
+                        </Typography>
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {expected_data.goals.map((g, i) => (
+                    <tr key={i}>
+                      <td className="py-3 px-5">{g.title}</td>
+                      <td className="py-3 px-5">{g.target}</td>
+                      <td className="py-3 px-5">
+                        <Chip variant="gradient" color={g.status === "completed" ? "green" : "blue"} value={g.status} />
+                      </td>
+                      <td className="py-3 px-5">{g.due_date}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </CardBody>
+          </Card>
+
+          {/* ------------------------------------------------------------- */}
+          {/* PRESCRIPTIONS */}
+          {/* ------------------------------------------------------------- */}
+          <Card>
+            <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
+              <Typography variant="h6" color="white">
+                Prescriptions
+              </Typography>
+            </CardHeader>
+
+            <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
+              <table className="w-full min-w-[640px] table-auto">
+                <thead>
+                  <tr>
+                    {["Medicine", "Dosage", "Days", "Doctor", "Date"].map((h) => (
+                      <th key={h} className="border-b border-blue-gray-50 py-3 px-5 text-left">
+                        <Typography variant="small" className="text-[11px] font-bold uppercase text-blue-gray-400">
+                          {h}
+                        </Typography>
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {expected_data.prescriptions.map((p, i) => (
+                    <tr key={i}>
+                      <td className="py-3 px-5">{p.medicine}</td>
+                      <td className="py-3 px-5">{p.dosage}</td>
+                      <td className="py-3 px-5">{p.days}</td>
+                      <td className="py-3 px-5">{p.doctor}</td>
+                      <td className="py-3 px-5">{p.date}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+
+
+            </CardBody>
+          </Card>
+
+
+
         </CardBody>
       </Card>
     </>
   );
 }
 
-export default Profile;
 import {
   Card,
   CardBody,
