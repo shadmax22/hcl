@@ -13,75 +13,71 @@ import {
     CardHeader,
     Typography
 } from "@material-tailwind/react";
-import React from "react";
+import React, { useState, useEffect } from "react";
+import api from "../../../../axios.js";
 
 export function AdminDashboard() {
-    // --------------------------------------------------------------------------
-    // ALL ADMIN DATA FROM ONE SOURCE
-    // --------------------------------------------------------------------------
-    const admin_data = {
-        stats: {
-            total_doctors: 42,
-            total_patients: 1080,
-            active_patients: 860,
-        },
+    const [stats, setStats] = useState({
+        total_doctors: 0,
+        total_patients: 0,
+        active_patients: 0,
+    });
+    const [doctors, setDoctors] = useState([]);
+    const [patients, setPatients] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
-        doctors: [
-            {
-                name: "Dr. Ritesh Sharma",
-                specialization: "Cardiologist",
-                email: "ritesh@hospital.com",
-                img: "/img/team-1.jpeg",
-            },
-            {
-                name: "Dr. Meera Patel",
-                specialization: "Dermatologist",
-                email: "meera@hospital.com",
-                img: "/img/team-2.jpeg",
-            },
-            {
-                name: "Dr. Sanjay Gupta",
-                specialization: "Neurologist",
-                email: "sanjay@hospital.com",
-                img: "/img/team-3.jpeg",
-            },
-        ],
+    useEffect(() => {
+        fetchDashboardData();
+    }, []);
 
-        patients: [
-            {
-                name: "Rahul Verma",
-                issue: "Chest Pain",
-                email: "rahul@gmail.com",
-                img: "/img/bruce-mars.jpeg",
-            },
-            {
-                name: "Sara Khan",
-                issue: "Fever & Cough",
-                email: "sara@gmail.com",
-                img: "/img/team-4.jpeg",
-            },
-            {
-                name: "Mohit Yadav",
-                issue: "Back Pain",
-                email: "mohit@gmail.com",
-                img: "/img/team-2.jpeg",
-            },
-        ],
+    const fetchDashboardData = async () => {
+        try {
+            setLoading(true);
+            setError("");
 
-        recent_patients: [
-            {
-                name: "Aman Gupta",
-                age: 25,
-                img: "/img/team-1.jpeg",
-                date: "22 Nov 2025",
-            },
-            {
-                name: "Priya Sharma",
-                age: 30,
-                img: "/img/team-3.jpeg",
-                date: "21 Nov 2025",
-            },
-        ],
+            // Fetch statistics
+            const statsResponse = await api.get("/v1/admin/statistics");
+            if (statsResponse.data && statsResponse.data.statistics) {
+                setStats({
+                    total_doctors: statsResponse.data.statistics.doctors || 0,
+                    total_patients: statsResponse.data.statistics.patients || 0,
+                    active_patients: statsResponse.data.statistics.patients || 0,
+                });
+            }
+
+            // Fetch doctors
+            const doctorsResponse = await api.get("/v1/admin/doctors");
+            if (doctorsResponse.data && doctorsResponse.data.doctors) {
+                const doctorsList = doctorsResponse.data.doctors.slice(0, 3).map((doctor) => ({
+                    name: doctor.user?.name || "N/A",
+                    specialization: doctor.specialisation || "N/A",
+                    email: doctor.user?.email || "N/A",
+                    img: "/img/team-1.jpeg",
+                }));
+                setDoctors(doctorsList);
+            }
+
+            // Fetch all users (patients)
+            const usersResponse = await api.get("/v1/admin/users");
+            if (usersResponse.data && usersResponse.data.users) {
+                const patientUsers = usersResponse.data.users
+                    .filter((user) => user.role === "patient")
+                    .slice(0, 3)
+                    .map((user) => ({
+                        name: user.name,
+                        issue: "N/A",
+                        email: user.email,
+                        img: "/img/bruce-mars.jpeg",
+                    }));
+                setPatients(patientUsers);
+            }
+        } catch (err) {
+            console.error("Error fetching dashboard data:", err);
+            setError("Failed to load dashboard data");
+        } finally {
+            setLoading(false);
+        }
     };
 
     const statisticsCards = [
@@ -89,21 +85,32 @@ export function AdminDashboard() {
             color: "gray",
             icon: UsersIcon,
             title: "Total Doctors",
-            value: admin_data.stats.total_doctors,
+            value: stats.total_doctors,
         },
         {
             color: "gray",
             icon: UserGroupIcon,
             title: "Total Patients",
-            value: admin_data.stats.total_patients,
+            value: stats.total_patients,
         },
         {
             color: "gray",
             icon: ClipboardDocumentCheckIcon,
             title: "Active Patients",
-            value: admin_data.stats.active_patients,
+            value: stats.active_patients,
         },
     ];
+
+    const recent_patients = patients.slice(0, 2).map((patient, index) => ({
+        name: patient.name,
+        age: 25,
+        img: "/img/team-1.jpeg",
+        date: new Date().toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+        }),
+    }));
 
 
 
@@ -153,7 +160,7 @@ export function AdminDashboard() {
                                 Doctors List
                             </Typography>
                             <Typography variant="small" className="text-blue-gray-600">
-                                Total {admin_data.stats.total_doctors} registered doctors
+                                Total {stats.total_doctors} registered doctors
                             </Typography>
                         </div>
 
@@ -182,20 +189,38 @@ export function AdminDashboard() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {admin_data.doctors.map(
-                                    ({ name, specialization, email, img }, index) => (
-                                        <tr key={index}>
-                                            <td className="py-3 px-6">
-                                                <div className="flex items-center gap-4">
-                                                    <Avatar src={img} alt={name} size="sm" />
-                                                    <Typography className="font-normal" color="blue-gray">
-                                                        {name}
-                                                    </Typography>
-                                                </div>
-                                            </td>
-                                            <td className="py-3 px-6">{specialization}</td>
-                                            <td className="py-3 px-6">{email}</td>
-                                        </tr>
+                                {loading ? (
+                                    <tr>
+                                        <td colSpan={3} className="py-3 px-6 text-center">
+                                            <Typography variant="small" color="blue-gray">
+                                                Loading doctors...
+                                            </Typography>
+                                        </td>
+                                    </tr>
+                                ) : doctors.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={3} className="py-3 px-6 text-center">
+                                            <Typography variant="small" color="blue-gray">
+                                                No doctors found
+                                            </Typography>
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    doctors.map(
+                                        ({ name, specialization, email, img }, index) => (
+                                            <tr key={index}>
+                                                <td className="py-3 px-6">
+                                                    <div className="flex items-center gap-4">
+                                                        <Avatar src={img} alt={name} size="sm" />
+                                                        <Typography className="font-normal" color="blue-gray">
+                                                            {name}
+                                                        </Typography>
+                                                    </div>
+                                                </td>
+                                                <td className="py-3 px-6">{specialization}</td>
+                                                <td className="py-3 px-6">{email}</td>
+                                            </tr>
+                                        )
                                     )
                                 )}
                             </tbody>
@@ -217,22 +242,32 @@ export function AdminDashboard() {
                     </CardHeader>
 
                     <CardBody className="pt-0">
-                        {admin_data.recent_patients.map(
-                            ({ name, age, img, date }, index) => (
-                                <div
-                                    key={index}
-                                    className="flex items-center gap-4 border-b border-blue-gray-50 py-3 last:border-none"
-                                >
-                                    <Avatar src={img} alt={name} size="sm" />
-                                    <div>
-                                        <Typography variant="small" color="blue-gray">
-                                            {name}
-                                        </Typography>
-                                        <Typography className="text-xs text-blue-gray-500">
-                                            Age {age} • {date}
-                                        </Typography>
+                        {loading ? (
+                            <Typography variant="small" color="blue-gray" className="text-center py-3">
+                                Loading...
+                            </Typography>
+                        ) : recent_patients.length === 0 ? (
+                            <Typography variant="small" color="blue-gray" className="text-center py-3">
+                                No recent patients
+                            </Typography>
+                        ) : (
+                            recent_patients.map(
+                                ({ name, age, img, date }, index) => (
+                                    <div
+                                        key={index}
+                                        className="flex items-center gap-4 border-b border-blue-gray-50 py-3 last:border-none"
+                                    >
+                                        <Avatar src={img} alt={name} size="sm" />
+                                        <div>
+                                            <Typography variant="small" color="blue-gray">
+                                                {name}
+                                            </Typography>
+                                            <Typography className="text-xs text-blue-gray-500">
+                                                Age {age} • {date}
+                                            </Typography>
+                                        </div>
                                     </div>
-                                </div>
+                                )
                             )
                         )}
                     </CardBody>
@@ -249,7 +284,7 @@ export function AdminDashboard() {
                             All Patients
                         </Typography>
                         <Typography variant="small" className="text-blue-gray-600">
-                            Total {admin_data.stats.total_patients} registered patients
+                            Total {stats.total_patients} registered patients
                         </Typography>
                     </CardHeader>
 
@@ -274,18 +309,36 @@ export function AdminDashboard() {
                             </thead>
 
                             <tbody>
-                                {admin_data.patients.map(
-                                    ({ name, issue, email, img }, index) => (
-                                        <tr key={index}>
-                                            <td className="py-3 px-6">
-                                                <div className="flex items-center gap-4">
-                                                    <Avatar src={img} alt={name} size="sm" />
-                                                    <Typography color="blue-gray">{name}</Typography>
-                                                </div>
-                                            </td>
-                                            <td className="py-3 px-6">{issue}</td>
-                                            <td className="py-3 px-6">{email}</td>
-                                        </tr>
+                                {loading ? (
+                                    <tr>
+                                        <td colSpan={3} className="py-3 px-6 text-center">
+                                            <Typography variant="small" color="blue-gray">
+                                                Loading patients...
+                                            </Typography>
+                                        </td>
+                                    </tr>
+                                ) : patients.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={3} className="py-3 px-6 text-center">
+                                            <Typography variant="small" color="blue-gray">
+                                                No patients found
+                                            </Typography>
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    patients.map(
+                                        ({ name, issue, email, img }, index) => (
+                                            <tr key={index}>
+                                                <td className="py-3 px-6">
+                                                    <div className="flex items-center gap-4">
+                                                        <Avatar src={img} alt={name} size="sm" />
+                                                        <Typography color="blue-gray">{name}</Typography>
+                                                    </div>
+                                                </td>
+                                                <td className="py-3 px-6">{issue}</td>
+                                                <td className="py-3 px-6">{email}</td>
+                                            </tr>
+                                        )
                                     )
                                 )}
                             </tbody>

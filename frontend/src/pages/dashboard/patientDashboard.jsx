@@ -1,8 +1,5 @@
 import {
-  Card,
-  CardHeader,
-  CardBody,
-  Typography,
+
   Button,
   Input,
   Select,
@@ -10,6 +7,20 @@ import {
   Chip,
   IconButton,
 } from "@material-tailwind/react";
+import {
+  ClipboardDocumentCheckIcon,
+  ChatBubbleLeftEllipsisIcon,
+  CalendarDaysIcon
+} from "@heroicons/react/24/outline";
+
+import {
+  Avatar,
+  Card,
+  CardBody,
+  CardHeader,
+  Typography
+} from "@material-tailwind/react";
+
 import { useState, useEffect } from "react";
 import api from "../../../axios.js";
 import {
@@ -164,7 +175,116 @@ export function PatientDashboard() {
     return category ? category.label : type;
   };
 
-  return (
+  const patient_data = {
+    patient: {
+        name: "Shad Ali",
+        age: 20,
+        gender: "Male",
+        img: "/img/bruce-mars.jpeg",
+    },
+
+    stats: {
+        total_goals: 7,
+        total_responses: 14,
+        upcoming_appointments: 3,
+    },
+
+    upcoming_appointments: [
+        {
+            doctor: "Dr. Ritesh Sharma",
+            date: "25 Nov 2025",
+            time: "03:30 PM",
+            department: "Cardiology",
+            img: "/img/team-1.jpeg",
+        },
+        {
+            doctor: "Dr. Meera Patel",
+            date: "28 Nov 2025",
+            time: "11:00 AM",
+            department: "Dermatology",
+            img: "/img/team-2.jpeg",
+        },
+        {
+            doctor: "Dr. Sanjay Gupta",
+            date: "30 Nov 2025",
+            time: "09:00 AM",
+            department: "Neurology",
+            img: "/img/team-3.jpeg",
+        },
+    ],
+
+    doctor_responses: [
+        {
+            doctor: "Dr. Ritesh",
+            img: "/img/team-1.jpeg",
+            message: "Increase water intake and avoid heavy lifting this week.",
+            time: "Yesterday",
+        },
+        {
+            doctor: "Dr. Kumar",
+            img: "/img/team-2.jpeg",
+            message: "Your reports look good. Continue the same medication.",
+            time: "2 days ago",
+        },
+        {
+            doctor: "Dr. Sunaina",
+            img: "/img/team-5.jpeg",
+            message: "Practice breathing exercises daily for anxiety.",
+            time: "4 days ago",
+        }
+    ],
+
+    goals_from_doctors: [
+        {
+            doctor: "Dr. Ritesh Sharma",
+            doctor_img: "/img/team-1.jpeg",
+            goal: "Gain 5 kg weight",
+            due: "20 Dec 2025",
+            status: "active",
+        },
+        {
+            doctor: "Dr. Kumar",
+            doctor_img: "/img/team-2.jpeg",
+            goal: "Reduce headache occurrences to < 2",
+            due: "28 Nov 2025",
+            status: "active",
+        },
+        {
+            doctor: "Dr. Sunaina",
+            doctor_img: "/img/team-5.jpeg",
+            goal: "Anxiety level < 3",
+            due: "15 Dec 2025",
+            status: "active",
+        },
+        {
+            doctor: "Dr. Mehta",
+            doctor_img: "/img/team-4.jpeg",
+            goal: "Lower cough frequency",
+            due: "10 Dec 2025",
+            status: "completed",
+        },
+    ],
+};
+
+const statisticsCards = [
+    {
+        icon: ClipboardDocumentCheckIcon,
+        title: "Assigned Goals",
+        value: patient_data.stats.total_goals,
+    },
+    {
+        icon: ChatBubbleLeftEllipsisIcon,
+        title: "Doctor Responses",
+        value: patient_data.stats.total_responses,
+    },
+    {
+        icon: CalendarDaysIcon,
+        title: "Upcoming Appointments",
+        value: patient_data.stats.upcoming_appointments,
+    },
+];
+
+  return (<>
     <div className="mt-12 mb-8 flex flex-col gap-12">
       <div className="flex justify-between items-center">
         <Typography variant="h2" color="blue-gray">
@@ -218,12 +338,11 @@ export function PatientDashboard() {
               />
             </div>
             <div className="flex gap-2 mt-4">
-              <Button onClick={handleAdd} className="flex gap-2 items-center" size="sm" color="green">
+              <Button onClick={handleAdd} className="flex gap-2" size="sm" color="green">
                 <CheckIcon className="h-4 w-4 mr-1" />
                 Save
               </Button>
               <Button
-              className="flex gap-2 items-center"
                 onClick={() => {
                   setShowAddForm(false);
                   setAddForm({ type: "", value: "", date: "" });
@@ -396,6 +515,7 @@ export function PatientDashboard() {
         </CardBody>
       </Card>
     </div>
+    </>
   );
 }
 

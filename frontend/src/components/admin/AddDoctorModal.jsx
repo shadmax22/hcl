@@ -1,5 +1,7 @@
 import { Modal } from "react-easetools";
 import { useForm, Controller } from "react-hook-form";
+import api from "../../../axios.js";
+import { useState, useEffect } from "react";
 
 export async function AddDoctorModal() {
 
@@ -14,6 +16,29 @@ export async function AddDoctorModal() {
 
 
 function AddDoctor() {
+  const [careCategories, setCareCategories] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [loadingCategories, setLoadingCategories] = useState(true);
+
+  useEffect(() => {
+    fetchCareCategories();
+  }, []);
+
+  const fetchCareCategories = async () => {
+    try {
+      setLoadingCategories(true);
+      const response = await api.get("/v1/admin/care-categories");
+      if (response.data && response.data.categories) {
+        setCareCategories(response.data.categories);
+      }
+    } catch (err) {
+      console.error("Error fetching care categories:", err);
+      setErrorMessage("Failed to load care categories. Please refresh the page.");
+    } finally {
+      setLoadingCategories(false);
+    }
+  };
 
   const { control, handleSubmit, formState: { errors } } = useForm({
     defaultValues: {
@@ -28,10 +53,37 @@ function AddDoctor() {
     },
   });
 
-  const onSubmit = (data) => {
-    console.log("Doctor Submitted:", data);
+  const onSubmit = async (data) => {
+    setLoading(true);
+    setErrorMessage("");
 
-    alert("Doctor Added Successfully!");
+    try {
+      const response = await api.post("/v1/admin/doctors", {
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        phone_no: data.phone_no || undefined,
+        DOB: data.DOB || undefined,
+        gender: data.gender || undefined,
+        specialisation: data.specialisation,
+        care_category: data.care_category,
+      });
+
+      if (response.data && response.data.message) {
+        alert("Doctor Added Successfully!");
+        // Close modal and refresh
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error("Error creating doctor:", error);
+      if (error.response && error.response.data) {
+        setErrorMessage(error.response.data.message || "Failed to create doctor");
+      } else {
+        setErrorMessage("An error occurred. Please try again.");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -182,35 +234,43 @@ function AddDoctor() {
         )}
       </div>
 
-      {/* ------------------------- CARE CATEGORY -------------------------- */}
-      <div>
-        <label className="block mb-1 font-medium">Care Category</label>
-        <Controller
-          name="care_category"
-          control={control}
-          rules={{ required: "Care category is required" }}
-          render={({ field }) => (
-            <select {...field} className="w-full border px-3 py-2 rounded-md">
-              <option value="">Select Healthcare Category</option>
-              <option value="cardiology">Cardiology</option>
-              <option value="neurology">Neurology</option>
-              <option value="dermatology">Dermatology</option>
-              <option value="general">General</option>
-            </select>
-          )}
-        />
-        {errors.care_category && (
-          <p className="text-red-500 text-sm">{errors.care_category.message}</p>
-        )}
-      </div>
+            {/* ------------------------- CARE CATEGORY -------------------------- */}
+            <div>
+              <label className="block mb-1 font-medium">Care Category</label>
+              <Controller
+                name="care_category"
+                control={control}
+                rules={{ required: "Care category is required" }}
+                render={({ field }) => (
+                  <select {...field} className="w-full border px-3 py-2 rounded-md" disabled={loadingCategories}>
+                    <option value="">Select Healthcare Category</option>
+                    {careCategories.map((category) => (
+                      <option key={category._id} value={category._id}>
+                        {category.name}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              />
+              {errors.care_category && (
+                <p className="text-red-500 text-sm">{errors.care_category.message}</p>
+              )}
+            </div>
 
-      {/* ------------------------- SUBMIT BUTTON -------------------------- */}
-      <button
-        type="submit"
-        className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition sticky bottom-0"
-      >
-        Add Doctor
-      </button>
+            {errorMessage && (
+              <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-red-600 text-sm">{errorMessage}</p>
+              </div>
+            )}
+
+            {/* ------------------------- SUBMIT BUTTON -------------------------- */}
+            <button
+              type="submit"
+              disabled={loading || loadingCategories}
+              className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition sticky bottom-0 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? "Adding..." : "Add Doctor"}
+            </button>
 
     </form>
   );

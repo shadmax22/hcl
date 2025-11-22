@@ -6,6 +6,7 @@ import {
 } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import api from "axios";
 
 export function SignUpPatient() {
   const [formData, setFormData] = useState({
@@ -58,22 +59,42 @@ export function SignUpPatient() {
     return Object.keys(tempErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validate()) {
-      console.log("Form Data Submitted:", formData);
-      alert("Registration Successful!");
-      setFormData({
-        name: "",
-        email: "",
-        password: "",
-        repeatPassword: "",
-        phone: "",
-        dob: "",
-        gender: "",
-        agree: false,
+    if (!validate()) {
+      return;
+    }
+
+    try {
+      const response = await api.post("/v1/auth/register-patient", {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        phone_no: formData.phone,
+        DOB: formData.dob,
+        gender: formData.gender,
       });
-      setErrors({});
+
+      if (response.data && response.data.token) {
+        // Store token in localStorage
+        localStorage.setItem("accessToken", response.data.token);
+        
+        // Store user info if needed
+        if (response.data.user) {
+          localStorage.setItem("user", JSON.stringify(response.data.user));
+        }
+
+        alert("Registration Successful!");
+        // Redirect to dashboard
+        window.location.href = "/dashboard/home";
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+      if (error.response && error.response.data) {
+        alert(error.response.data.message || "Registration failed. Please try again.");
+      } else {
+        alert("An error occurred. Please try again.");
+      }
     }
   };
 

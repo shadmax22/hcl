@@ -1,187 +1,513 @@
-# [Material Tailwind Dashboard React](http://demos.creative-tim.com/material-tailwind-dashboard-react/#/?ref=readme-mtdr) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social&logo=twitter)](https://twitter.com/intent/tweet?url=https://www.creative-tim.com/product/material-tailwind-dashboard-react&text=Check%20Material%20Tailwind%20Dashboard%20React%20made%20by%20@CreativeTim%20#webdesign%20#kit%20#materialdesign%20#react%20#materialtailwind%20#tailwindcss%20https://www.creative-tim.com/product/material-tailwind-dashboard-react)
+# Healthcare Wellness Platform - Frontend
 
-![version](https://img.shields.io/badge/version-2.1.0-blue.svg) [![GitHub issues open](https://img.shields.io/github/issues/creativetimofficial/material-tailwind-dashboard-react.svg)](https://github.com/creativetimofficial/material-tailwind-dashboard-react/issues?q=is%3Aopen+is%3Aissue) [![GitHub issues closed](https://img.shields.io/github/issues-closed-raw/creativetimofficial/material-tailwind-dashboard-react.svg)](https://github.com/creativetimofficial/material-tailwind-dashboard-react/issues?q=is%3Aissue+is%3Aclosed)
+Modern React-based frontend application for the Healthcare Wellness Platform, built with Material Tailwind, Vite, and React Router.
 
-![Image](https://s3.amazonaws.com/creativetim_bucket/products/488/original/material-tailwind-dashboard-react.jpg)
+## 📋 Table of Contents
 
-Material Tailwind Dashboard React is our newest free Material Tailwind Admin Template based on Tailwind CSS and React. If you’re a developer looking to create an admin dashboard that is developer-friendly, rich with features, and highly customisable, here is your match. Our innovative Material Tailwind, Tailwind CSS & React dashboard comes with a beautiful design inspired by Google's Material Design and it will help you create stunning websites & web apps to delight your clients.
+- [Features](#-features)
+- [Prerequisites](#-prerequisites)
+- [Installation](#-installation)
+- [Environment Variables](#-environment-variables)
+- [Running the Application](#-running-the-application)
+- [Project Structure](#-project-structure)
+- [Pages & Components](#-pages--components)
+- [Authentication](#-authentication)
+- [User Roles & Dashboards](#-user-roles--dashboards)
+- [Available Scripts](#-available-scripts)
+- [Technology Stack](#-technology-stack)
+- [Building for Production](#-building-for-production)
+- [Configuration](#-configuration)
+- [Contributing](#-contributing)
 
-**Fully Coded Elements**
+## ✨ Features
 
-Material Tailwind Dashboard React is built with over 40 frontend individual elements coming from @material-tailwind/react, like buttons, inputs, navbars, nav tabs, cards, or alerts, giving you the freedom of choosing and combining. All components can take variations in color, which you can easily modify using props and tailwind css classnames. You will save a lot of time going from prototyping to full-functional code because all elements are implemented.
+### Core Features
+- **User Authentication**
+  - Patient sign-up
+  - User login
+  - JWT token management
+  - Protected routes
+  - Role-based navigation
 
-This free Material Tailwind, Tailwind CSS & React Dashboard is coming with prebuilt design blocks, so the development process is seamless, switching from our pages to the real website is very easy to be done.
+- **Role-Based Dashboards**
+  - **Admin Dashboard**: User management, doctor management, system statistics
+  - **Doctor Dashboard**: Patient management, goal creation, patient health records
+  - **Patient Dashboard**: Health tracking, goals, reminders, notifications
 
-View [all components here](https://www.material-tailwind.com/docs/react/button).
+- **Patient Features**
+  - Health tracking records (blood pressure, weight, glucose, etc.)
+  - Add, edit, and delete tracking records
+  - View health goals
+  - View preventive care reminders
+  - Notifications management
+  - Profile management
 
-**Documentation built by Developers**
+- **Doctor Features**
+  - View assigned patients
+  - Patient profile management
+  - Create and manage patient goals
+  - View patient health records
+  - Notifications
 
-Each element is well presented in very complex documentation.
+- **Admin Features**
+  - User management
+  - Doctor/Healthcare provider management
+  - Add new doctors
+  - System statistics
+  - Notifications
 
-You can read more about the [documentation here](https://www.material-tailwind.com/docs/react/installation).
+- **UI/UX Features**
+  - Modern Material Design interface
+  - Responsive design (mobile, tablet, desktop)
+  - Dark/Light theme support
+  - Interactive charts and statistics
+  - Real-time notifications
+  - Form validation
+  - Error handling
 
-**Example Pages**
+## 🚀 Prerequisites
 
-If you want to get inspiration or just show something directly to your clients, you can jump-start your development with our pre-built example pages. You will be able to quickly set up the basic structure for your web project.
+Before you begin, ensure you have the following installed:
 
-View [example pages here](https://demos.creative-tim.com/material-tailwind-dashboard-react/#/dashboard/home).
+- **Node.js** >= 18.0.0 (LTS version recommended)
+- **npm** >= 9.0.0 (or yarn/pnpm)
+- **Backend API** running (see backend README for setup)
 
-**HELPFUL LINKS**
+## 📦 Installation
 
-- View [Github Repository](https://github.com/creativetimofficial/material-tailwind-dashboard-react)
-- Check [FAQ Page](https://www.creative-tim.com/faq)
+1. **Navigate to the frontend directory**
+   ```bash
+   cd frontend
+   ```
 
-#### Special thanks
+2. **Install dependencies**
+   ```bash
+   npm install
+   # or
+   yarn install
+   # or
+   pnpm install
+   ```
 
-During the development of this dashboard, we have used many existing resources from awesome developers. We want to thank them for providing their tools open source:
+3. **Set up environment variables**
+   ```bash
+   # Create .env file in the frontend directory
+   touch .env
+   ```
 
-- [Material Tailwind](https://material-tailwind.com/) - Material Tailwind is an easy to use components library for Tailwind CSS and Material Design.
-- [Hero Icons](https://heroicons.com/) - Beautiful hand-crafted SVG icons.
-- [Apex Charts](https://apexcharts.com/) - Modern & Interactive open-source Charts.
-- [Nepcha Analytics](https://nepcha.com?ref=readme) for the analytics tool. Nepcha is already integrated with Material Tailwind Dashboard React. You can use it to gain insights into your sources of traffic.
+4. **Configure environment variables** (see [Environment Variables](#-environment-variables) section)
 
-Let us know your thoughts below. And good luck with development!
+## 🔧 Environment Variables
 
-## Table of Contents
+Create a `.env` file in the `frontend` directory:
 
-- [Versions](#versions)
-- [Demo](#demo)
-- [Quick Start](#quick-start)
-- [Deploy](#deploy)
-- [Documentation](#documentation)
-- [File Structure](#file-structure)
-- [Browser Support](#browser-support)
-- [Resources](#resources)
-- [Reporting Issues](#reporting-issues)
-- [Technical Support or Questions](#technical-support-or-questions)
-- [Licensing](#licensing)
-- [Useful Links](#useful-links)
-
-## Versions
-
-[<img src="https://raw.githubusercontent.com/creativetimofficial/public-assets/master/logos/react-logo.jpg?raw=true" width="60" height="60" />](https://www.creative-tim.com/product/material-tailwind-dashboard-react?ref=readme-mtdr)
-
-| React |
-| ----- |
-
-| [![Material Tailwind Dashboard React](https://s3.amazonaws.com/creativetim_bucket/products/488/thumb/material-tailwind-dashboard-react.jpg)](http://demos.creative-tim.com/material-tailwind-dashboard-react/#/?ref=readme-mtdr)
-
-## Demo
-
-- [Dashboard page](https://demos.creative-tim.com/material-tailwind-dashboard-react/#/dashboard/home?ref=readme-mtdr)
-- [Profile page](https://demos.creative-tim.com/material-tailwind-dashboard-react/#/dashboard/profile?ref=readme-mtdr)
-- [Tables page](https://demos.creative-tim.com/material-tailwind-dashboard-react/#/dashboard/tables?ref=readme-mtdr)
-- [Notifications page](https://demos.creative-tim.com/material-tailwind-dashboard-react/#/dashboard/notifications?ref=readme-mtdr)
-- [Sign in page](https://demos.creative-tim.com/material-tailwind-dashboard-react/#/auth/sign-in?ref=readme-mtdr)
-- [Sign up page](https://demos.creative-tim.com/material-tailwind-dashboard-react/#/auth/sign-up?ref=readme-mtdr)
-
-[View More](https://demos.creative-tim.com/material-tailwind-dashboard-react/#/?ref=readme-mtdr).
-
-## Quick start
-
-Quick start options:
-
-- Download from [Creative Tim](https://www.creative-tim.com/product/material-tailwind-dashboard-react?ref=readme-mtdr).
-
-## Deploy
-
-:rocket: You can deploy your own version of the template to Genezio with one click:
-
-[![Deploy to Genezio](https://raw.githubusercontent.com/Genez-io/graphics/main/svg/deploy-button.svg)](https://app.genez.io/start/deploy?repository=https://github.com/creativetimofficial/material-tailwind-dashboard-react&utm_source=github&utm_medium=referral&utm_campaign=github-creativetim&utm_term=deploy-project&utm_content=button-head)
-
-## Terminal Commands
-
-1. Download and Install NodeJs LTS version from [NodeJs Official Page](https://nodejs.org/en/download/).
-2. Navigate to the root ./ directory of the product and run `npm install` or `yarn install` or `pnpm install` to install our local dependencies.
-
-## Documentation
-
-The documentation for the Material Tailwind Dashboard React is hosted at our [website](https://material-tailwind.com/?ref=readme-mtdr).
-
-### What's included
-
-Within the download you'll find the following directories and files:
-
-```
-material-tailwind-dashboard-react
-    ├── public
-    │   ├── css
-    │   └── img
-    ├── src
-    │   ├── configs
-    │   ├── context
-    │   ├── data
-    │   ├── layouts
-    │   ├── pages
-    │   ├── widgets
-    │   ├── App.jsx
-    │   ├── main.jsx
-    │   └── routes.jsx
-    ├── .gitignore
-    ├── CHANGELOG.md
-    ├── index.html
-    ├── ISSUE_TEMPLATE.md
-    ├── jsconfig.json
-    ├── LICENSE
-    ├── package.json
-    ├── postcsss.config.cjs
-    ├── prettier.config.cjs
-    ├── README.md
-    ├── tailwind.config.cjs
-    └── vite.config.js
+```env
+# API Configuration
+VITE_API_ENDPOINT=http://localhost:3000
 ```
 
-## Browser Support
+### Environment Variable Descriptions
 
-At present, we officially aim to support the last two versions of the following browsers:
+- `VITE_API_ENDPOINT`: Backend API base URL (default: `http://localhost:3000`)
 
-<img src="https://s3.amazonaws.com/creativetim_bucket/github/browser/chrome.png" width="64" height="64"> <img src="https://s3.amazonaws.com/creativetim_bucket/github/browser/firefox.png" width="64" height="64"> <img src="https://s3.amazonaws.com/creativetim_bucket/github/browser/edge.png" width="64" height="64"> <img src="https://s3.amazonaws.com/creativetim_bucket/github/browser/safari.png" width="64" height="64"> <img src="https://s3.amazonaws.com/creativetim_bucket/github/browser/opera.png" width="64" height="64">
+**Note**: In Vite, environment variables must be prefixed with `VITE_` to be accessible in the application.
 
-## Resources
+## 🏃 Running the Application
 
-- [Live Preview](https://demos.creative-tim.com/material-tailwind-dashboard-react/#/dashboard/home?ref=readme-mtdr)
-- [Download Page](https://www.creative-tim.com/product/material-tailwind-dashboard-react?ref=readme-mtdr)
-- Documentation is [here](https://material-tailwind.com/?ref=readme-mtdr)
-- [License Agreement](https://www.creative-tim.com/license?ref=readme-mtdr)
-- [Support](https://www.creative-tim.com/contact-us?ref=readme-mtdr)
-- Issues: [Github Issues Page](https://github.com/creativetimofficial/material-tailwind-dashboard-react/issues)
-- [Nepcha Analytics](https://nepcha.com?ref=readme) - Analytics tool for your website
+### Development Mode
 
-## Reporting Issues
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+```
 
-We use GitHub Issues as the official bug tracker for the Material Tailwind Dashboard React. Here are some advices for our users that want to report an issue:
+The application will start on `http://localhost:5173` (or the next available port).
 
-1. Make sure that you are using the latest version of the Material Tailwind Dashboard React. Check the CHANGELOG from your dashboard on our [website](https://www.creative-tim.com/product/material-tailwind-dashboard-react?ref=readme-mtdr).
-2. Providing us reproducible steps for the issue will shorten the time it takes for it to be fixed.
-3. Some issues may be browser specific, so specifying in what browser you encountered the issue might help.
+### Production Build
 
-## Technical Support or Questions
+```bash
+# Build for production
+npm run build
 
-If you have questions or need help integrating the product please [contact us](https://www.creative-tim.com/contact-us?ref=readme-mtdr) instead of opening an issue.
+# Preview production build
+npm run preview
+```
 
-## Licensing
+## 📁 Project Structure
 
-- Copyright 2023 [Creative Tim](https://www.creative-tim.com?ref=readme-mtdr)
-- Creative Tim [license](https://www.creative-tim.com/license?ref=readme-mtdr)
+```
+frontend/
+├── public/              # Static assets
+│   ├── css/
+│   │   └── tailwind.css
+│   └── img/            # Images and icons
+├── src/
+│   ├── components/     # Reusable components
+│   │   ├── admin/
+│   │   │   └── AddDoctorModal.jsx
+│   │   ├── Doctors/
+│   │   │   └── AddDoctors.jsx
+│   │   └── Patients/
+│   │       └── PatientsProfiles.jsx
+│   ├── configs/        # Configuration files
+│   │   ├── charts-config.js
+│   │   └── index.js
+│   ├── context/        # React context providers
+│   │   └── index.jsx
+│   ├── data/           # Static data and mock data
+│   │   ├── statistics-cards-data.js
+│   │   ├── statistics-charts-data.js
+│   │   └── ...
+│   ├── layouts/        # Layout components
+│   │   ├── auth.jsx    # Authentication layout
+│   │   ├── dashboard.jsx # Dashboard layout
+│   │   └── index.js
+│   ├── pages/          # Page components
+│   │   ├── auth/       # Authentication pages
+│   │   │   ├── sign-in.jsx
+│   │   │   ├── sign-up.jsx
+│   │   │   └── patient/
+│   │   │       └── sign-up.jsx
+│   │   └── dashboard/  # Dashboard pages
+│   │       ├── admin/
+│   │       │   └── AdminDashboard.jsx
+│   │       ├── doctors/
+│   │       │   └── DoctorDashboard.jsx
+│   │       ├── patientDashboard.jsx
+│   │       ├── notifications.jsx
+│   │       ├── profile.jsx
+│   │       └── ...
+│   ├── routes.jsx      # Route configuration
+│   ├── utils/          # Utility functions
+│   │   ├── Auth-Header.js
+│   │   ├── Axios.js
+│   │   └── Error-Message.js
+│   ├── widgets/        # Widget components
+│   │   ├── cards/      # Card components
+│   │   ├── charts/     # Chart components
+│   │   └── layout/     # Layout widgets
+│   ├── App.jsx         # Main App component
+│   └── main.jsx        # Application entry point
+├── axios.js            # Axios configuration
+├── index.html          # HTML template
+├── package.json        # Dependencies and scripts
+├── vite.config.js      # Vite configuration
+├── tailwind.config.cjs # Tailwind CSS configuration
+└── postcss.config.cjs  # PostCSS configuration
+```
 
-## Useful Links
+## 📄 Pages & Components
 
-- [More products](https://www.creative-tim.com/templates?ref=readme-mtdr) from Creative Tim
+### Authentication Pages
 
-- [Tutorials](https://www.youtube.com/channel/UCVyTG4sCw-rOvB9oHkzZD1w)
+- **Sign In** (`/sign-in`)
+  - User login form
+  - Email and password authentication
+  - Redirects to appropriate dashboard based on role
 
-- [Freebies](https://www.creative-tim.com/bootstrap-themes/free?ref=readme-mtdr) from Creative Tim
+- **Sign Up** (`/patients/signup`)
+  - Patient registration form
+  - Form validation
+  - Consent management
 
-- [Affiliate Program](https://www.creative-tim.com/affiliates/new?ref=readme-mtdr) (earn money)
+### Dashboard Pages
 
-##### Social Media
+#### Admin Dashboard (`/dashboard/admin`)
+- System statistics
+- User management
+- Doctor management
+- Add new doctors
+- System overview
 
-Twitter: <https://twitter.com/CreativeTim>
+#### Doctor Dashboard (`/dashboard/admin` - for healthcare providers)
+- Assigned patients list
+- Patient management
+- Create patient goals
+- View patient health records
+- Notifications
 
-Facebook: <https://www.facebook.com/CreativeTim>
+#### Patient Dashboard (`/dashboard/admin` - for patients)
+- Health tracking records
+- Add/edit/delete tracking records
+- View health goals
+- View reminders
+- Notifications
 
-Dribbble: <https://dribbble.com/creativetim>
+#### Notifications (`/dashboard/notifications`)
+- View all notifications
+- Mark as read
+- Filter notifications
 
-Google+: <https://plus.google.com/+CreativetimPage>
+#### Profile (`/dashboard/profile`)
+- User profile information
+- Edit profile
+- View account details
 
-Instagram: <https://instagram.com/creativetimofficial>
+### Components
+
+- **AddDoctorModal**: Modal for adding new doctors (Admin)
+- **AddDoctors**: Doctor management component
+- **PatientsProfiles**: Patient profile management (Doctor view)
+
+## 🔐 Authentication
+
+### How Authentication Works
+
+1. **Login Process**
+   - User enters email and password
+   - Frontend sends credentials to `/v1/auth/login`
+   - Backend returns JWT token and user info
+   - Token stored in `localStorage` as `accessToken`
+   - User info stored in `localStorage` as `user`
+
+2. **Token Management**
+   - Axios interceptor automatically adds token to requests
+   - Token included in `Authorization: Bearer <token>` header
+   - Token validated on protected routes
+
+3. **Protected Routes**
+   - Routes are protected based on user role
+   - Unauthenticated users redirected to login
+   - Role-based navigation in sidebar
+
+### Authentication Flow
+
+```
+Login → Get Token → Store in localStorage → Redirect to Dashboard
+```
+
+### Logout
+
+Currently, logout can be implemented by:
+- Clearing `localStorage`
+- Removing `accessToken` and `user`
+- Redirecting to login page
+
+## 👥 User Roles & Dashboards
+
+### Admin Role
+- **Dashboard**: Admin dashboard with system statistics
+- **Navigation**: Dashboard, Doctors List, Notifications
+- **Features**: User management, doctor management, system overview
+
+### Healthcare Provider Role
+- **Dashboard**: Doctor dashboard with patient management
+- **Navigation**: Dashboard, Patients Management, Notifications
+- **Features**: View patients, create goals, manage patient records
+
+### Patient Role
+- **Dashboard**: Patient dashboard with health tracking
+- **Navigation**: Dashboard, Notifications
+- **Features**: Track health metrics, view goals, manage reminders
+
+## 📜 Available Scripts
+
+### Development Scripts
+```bash
+npm run dev      # Start development server
+npm run build    # Build for production
+npm run preview  # Preview production build
+```
+
+### Script Descriptions
+
+- `npm run dev`: Starts Vite development server with hot module replacement
+- `npm run build`: Creates optimized production build in `dist/` directory
+- `npm run preview`: Serves the production build locally for testing
+
+## 🛠️ Technology Stack
+
+### Core Framework
+- **React** 18.2.0 - UI library
+- **React Router DOM** 6.17.0 - Client-side routing
+- **Vite** 4.5.0 - Build tool and dev server
+
+### UI Framework
+- **Material Tailwind** 2.1.4 - React components based on Material Design
+- **Tailwind CSS** 3.3.4 - Utility-first CSS framework
+- **Heroicons** 2.0.18 - Icon library
+
+### Data Visualization
+- **ApexCharts** 3.44.0 - Chart library
+- **React ApexCharts** 1.4.1 - React wrapper for ApexCharts
+
+### HTTP Client
+- **Axios** 1.13.2 - HTTP client for API requests
+
+### Form Management
+- **React Hook Form** 7.66.1 - Form state management and validation
+
+### Development Tools
+- **TypeScript Types** - Type definitions for React and React DOM
+- **Prettier** 3.0.3 - Code formatter
+- **PostCSS** 8.4.31 - CSS processing
+- **Autoprefixer** 10.4.16 - CSS vendor prefixing
+
+## 🏗️ Building for Production
+
+### Build Process
+
+1. **Create production build**
+   ```bash
+   npm run build
+   ```
+
+2. **Preview production build**
+   ```bash
+   npm run preview
+   ```
+
+3. **Deploy**
+   - The `dist/` directory contains the production-ready files
+   - Deploy to your preferred hosting service:
+     - Vercel
+     - Netlify
+     - AWS S3 + CloudFront
+     - GitHub Pages
+     - Any static hosting service
+
+### Build Output
+
+The build process creates:
+- Optimized JavaScript bundles
+- Minified CSS
+- Optimized assets
+- Production-ready HTML
+
+## ⚙️ Configuration
+
+### Vite Configuration
+
+The `vite.config.js` file configures:
+- React plugin
+- Path aliases (`@` points to `src/`)
+- Build options
+
+### Tailwind Configuration
+
+The `tailwind.config.cjs` file configures:
+- Content paths for purging unused CSS
+- Theme customization
+- Material Tailwind integration
+
+### Axios Configuration
+
+The `axios.js` file configures:
+- Base URL from environment variables
+- Request interceptors (adds auth token)
+- Response interceptors (error handling)
+
+## 🔌 API Integration
+
+### API Base URL
+
+The frontend connects to the backend API. Configure the base URL in `.env`:
+
+```env
+VITE_API_ENDPOINT=http://localhost:3000
+```
+
+### API Endpoints Used
+
+- **Authentication**
+  - `POST /v1/auth/login` - User login
+  - `POST /v1/auth/register-patient` - Patient registration
+  - `GET /v1/auth/me` - Get current user
+
+- **Patient**
+  - `GET /v1/patient/profile` - Get patient profile
+  - `GET /v1/patient/tracking-records` - Get tracking records
+  - `POST /v1/patient/tracking-records` - Add tracking record
+  - `PUT /v1/patient/tracking-records/:id` - Update tracking record
+  - `DELETE /v1/patient/tracking-records/:id` - Delete tracking record
+  - `GET /v1/patient/goals` - Get patient goals
+  - `GET /v1/patient/notifications` - Get notifications
+
+- **Doctor**
+  - `GET /v1/doctor/patients` - Get assigned patients
+  - `GET /v1/doctor/patients/:patientId` - Get patient details
+  - `POST /v1/doctor/patients/:patientId/goals` - Create goal for patient
+
+- **Admin**
+  - `GET /v1/admin/users` - Get all users
+  - `GET /v1/admin/doctors` - Get all doctors
+  - `POST /v1/admin/doctors` - Create new doctor
+
+## 🎨 Styling
+
+### Material Tailwind
+
+The application uses Material Tailwind components:
+- Cards, Buttons, Inputs, Selects
+- Navigation components
+- Typography
+- Icons from Heroicons
+
+### Tailwind CSS
+
+Utility classes for:
+- Layout (flexbox, grid)
+- Spacing (margin, padding)
+- Colors
+- Typography
+- Responsive design
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+1. **API Connection Errors**
+   - Ensure backend is running
+   - Check `VITE_API_ENDPOINT` in `.env`
+   - Verify CORS settings in backend
+
+2. **Authentication Issues**
+   - Check token in localStorage
+   - Verify token hasn't expired
+   - Clear localStorage and login again
+
+3. **Build Errors**
+   - Clear `node_modules` and reinstall
+   - Check Node.js version (>= 18.0.0)
+   - Verify all dependencies are installed
+
+4. **Routing Issues**
+   - Check route configuration in `routes.jsx`
+   - Verify user role in localStorage
+   - Check protected route logic
+
+## 📝 Code Style
+
+- Use functional components with hooks
+- Follow React best practices
+- Use meaningful component and variable names
+- Add comments for complex logic
+- Follow Material Tailwind component patterns
+
+## 🤝 Contributing
+
+1. Follow existing code style
+2. Use functional components and hooks
+3. Test your changes in development mode
+4. Ensure responsive design works on all screen sizes
+5. Update documentation for new features
+6. Test authentication and role-based access
+
+## 📄 License
+
+See [LICENSE](./LICENSE) file for details.
+
+## 📞 Support
+
+For issues or questions:
+- Check backend API is running
+- Review browser console for errors
+- Check network tab for API requests
+- Verify environment variables are set correctly
+
+---
+
+**Last Updated**: 2024-01-15

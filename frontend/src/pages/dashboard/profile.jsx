@@ -55,7 +55,7 @@ export function PatientPrescription({ data }) {
     const newMessage = {
       sender: "doctor",
       name: expected_data.patient.doctor,
-      avatar: "/img/team-1.jpeg",
+      avatar: "/img/bruce-mars.jpeg",
       message: doctorMessage,
       time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     };
@@ -67,7 +67,7 @@ export function PatientPrescription({ data }) {
 
     setDoctorMessage("");
   };
-
+  img
   return (
     <>
       <Card className="mb-6 border border-blue-gray-100">

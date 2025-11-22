@@ -12,45 +12,85 @@ import {
     Typography
 } from "@material-tailwind/react";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
+import api from "../../../../axios.js";
 
 export function DoctorDashboard() {
+    const [doctor, setDoctor] = useState({
+        name: "Dr. Unknown",
+        specialization: "N/A",
+        email: "N/A",
+        img: "/img/team-1.jpeg",
+    });
+    const [stats, setStats] = useState({
+        assigned_patients: 0,
+        total_patients: 0,
+        active_patients: 0,
+    });
+    const [assignedPatients, setAssignedPatients] = useState([]);
+    const [allPatients, setAllPatients] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
-    // --------------------------------------------------------------------------
-    // ALL DOCTOR DATA FROM ONE SOURCE
-    // --------------------------------------------------------------------------
-    const doctor_data = {
-        doctor: {
-            name: "Dr. Ritesh Sharma",
-            specialization: "Cardiologist",
-            email: "ritesh@hospital.com",
-            img: "/img/team-1.jpeg",
-        },
+    useEffect(() => {
+        fetchDashboardData();
+    }, []);
 
-        stats: {
-            assigned_patients: 18,
-            total_patients: 1080,
-            active_patients: 860,
-        },
+    const fetchDashboardData = async () => {
+        try {
+            setLoading(true);
+            setError("");
 
-        assigned_patients: [
-            { name: "Shad Ali", age: 20, issue: "Chest Tightness", img: "/img/bruce-mars.jpeg", last_visit: "21 Nov 2025" },
-            { name: "Rahul Verma", age: 32, issue: "Chest Pain", img: "/img/team-2.jpeg", last_visit: "20 Nov 2025" },
-            { name: "Aman Gupta", age: 25, issue: "Irregular Heartbeat", img: "/img/team-3.jpeg", last_visit: "19 Nov 2025" },
-        ],
+            // Fetch doctor profile
+            const profileResponse = await api.get("/v1/doctor/profile");
+            if (profileResponse.data && profileResponse.data.user) {
+                setDoctor({
+                    name: profileResponse.data.user.name || "Dr. Unknown",
+                    specialization: profileResponse.data.provider?.specialisation || "N/A",
+                    email: profileResponse.data.user.email || "N/A",
+                    img: "/img/team-1.jpeg",
+                });
+            }
 
-        active_patients: [
-            { name: "Sara Khan", issue: "High BP", time: "Currently Under Treatment", img: "/img/team-4.jpeg" },
-            { name: "Anil Kumar", issue: "High Cholesterol", time: "Review Tomorrow", img: "/img/team-2.jpeg" },
-            { name: "Ravi Prakash", issue: "Shortness of Breath", time: "Today", img: "/img/team-1.jpeg" },
-        ],
+            // Fetch assigned patients
+            const patientsResponse = await api.get("/v1/doctor/patients");
+            if (patientsResponse.data && patientsResponse.data.patients) {
+                const patients = patientsResponse.data.patients;
+                setStats({
+                    assigned_patients: patients.length,
+                    total_patients: patients.length,
+                    active_patients: patients.filter((p) => p.stat === "active").length,
+                });
 
-        all_patients: [
-            { name: "Aman Gupta", issue: "Heart Palpitations", email: "aman@gmail.com", img: "/img/team-1.jpeg" },
-            { name: "Priya Sharma", issue: "Fever", email: "priya@gmail.com", img: "/img/team-3.jpeg" },
-            { name: "Mohit Yadav", issue: "Back Pain", email: "mohit@gmail.com", img: "/img/team-2.jpeg" },
-            { name: "Sara Khan", issue: "High BP", email: "sara@gmail.com", img: "/img/team-4.jpeg" },
-        ],
+                const formattedPatients = patients.slice(0, 3).map((patient) => ({
+                    name: patient.name,
+                    age: patient.DOB ? new Date().getFullYear() - new Date(patient.DOB).getFullYear() : 25,
+                    issue: "N/A",
+                    img: "/img/bruce-mars.jpeg",
+                    last_visit: patient.created_at
+                        ? new Date(patient.created_at).toLocaleDateString("en-US", {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                          })
+                        : "N/A",
+                }));
+                setAssignedPatients(formattedPatients);
+
+                const allFormatted = patients.map((patient) => ({
+                    name: patient.name,
+                    issue: "N/A",
+                    email: patient.email,
+                    img: "/img/team-1.jpeg",
+                }));
+                setAllPatients(allFormatted);
+            }
+        } catch (err) {
+            console.error("Error fetching dashboard data:", err);
+            setError("Failed to load dashboard data");
+        } finally {
+            setLoading(false);
+        }
     };
 
 
@@ -59,21 +99,28 @@ export function DoctorDashboard() {
             color: "gray",
             icon: UserGroupIcon,
             title: "Assigned Patients",
-            value: doctor_data.stats.assigned_patients,
+            value: stats.assigned_patients,
         },
         {
             color: "gray",
             icon: UsersIcon,
             title: "All Patients",
-            value: doctor_data.stats.total_patients,
+            value: stats.total_patients,
         },
         {
             color: "gray",
             icon: ClipboardDocumentCheckIcon,
             title: "Active Cases",
-            value: doctor_data.stats.active_patients,
+            value: stats.active_patients,
         },
     ];
+
+    const active_patients = assignedPatients.slice(0, 3).map((patient) => ({
+        name: patient.name,
+        issue: "N/A",
+        time: "Currently Under Treatment",
+        img: patient.img,
+    }));
 
     // --------------------------------------------------------------------------
 
@@ -140,24 +187,42 @@ export function DoctorDashboard() {
                             </thead>
 
                             <tbody>
-                                {doctor_data.assigned_patients.map(({ name, age, issue, img, last_visit }, index) => (
-                                    <tr key={index}>
-                                        <td className="py-3 px-6">
-                                            <div className="flex items-center gap-4">
-                                                <Avatar src={img} alt={name} size="sm" />
-                                                <div>
-                                                    <Typography color="blue-gray">{name}</Typography>
-                                                    <Typography className="text-xs text-blue-gray-500">
-                                                        Age {age}
-                                                    </Typography>
-                                                </div>
-                                            </div>
+                                {loading ? (
+                                    <tr>
+                                        <td colSpan={3} className="py-3 px-6 text-center">
+                                            <Typography variant="small" color="blue-gray">
+                                                Loading patients...
+                                            </Typography>
                                         </td>
-
-                                        <td className="py-3 px-6">{issue}</td>
-                                        <td className="py-3 px-6">{last_visit}</td>
                                     </tr>
-                                ))}
+                                ) : assignedPatients.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={3} className="py-3 px-6 text-center">
+                                            <Typography variant="small" color="blue-gray">
+                                                No assigned patients
+                                            </Typography>
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    assignedPatients.map(({ name, age, issue, img, last_visit }, index) => (
+                                        <tr key={index}>
+                                            <td className="py-3 px-6">
+                                                <div className="flex items-center gap-4">
+                                                    <Avatar src={img} alt={name} size="sm" />
+                                                    <div>
+                                                        <Typography color="blue-gray">{name}</Typography>
+                                                        <Typography className="text-xs text-blue-gray-500">
+                                                            Age {age}
+                                                        </Typography>
+                                                    </div>
+                                                </div>
+                                            </td>
+
+                                            <td className="py-3 px-6">{issue}</td>
+                                            <td className="py-3 px-6">{last_visit}</td>
+                                        </tr>
+                                    ))
+                                )}
                             </tbody>
                         </table>
                     </CardBody>
@@ -177,19 +242,29 @@ export function DoctorDashboard() {
                     </CardHeader>
 
                     <CardBody className="pt-0">
-                        {doctor_data.active_patients.map(({ name, issue, time, img }, index) => (
-                            <div key={index} className="flex items-center gap-4 border-b border-blue-gray-50 py-3 last:border-none">
-                                <Avatar src={img} size="sm" />
-                                <div>
-                                    <Typography variant="small" color="blue-gray">
-                                        {name}
-                                    </Typography>
-                                    <Typography className="text-xs text-blue-gray-500">
-                                        {issue} • {time}
-                                    </Typography>
+                        {loading ? (
+                            <Typography variant="small" color="blue-gray" className="text-center py-3">
+                                Loading...
+                            </Typography>
+                        ) : active_patients.length === 0 ? (
+                            <Typography variant="small" color="blue-gray" className="text-center py-3">
+                                No active patients
+                            </Typography>
+                        ) : (
+                            active_patients.map(({ name, issue, time, img }, index) => (
+                                <div key={index} className="flex items-center gap-4 border-b border-blue-gray-50 py-3 last:border-none">
+                                    <Avatar src={img} size="sm" />
+                                    <div>
+                                        <Typography variant="small" color="blue-gray">
+                                            {name}
+                                        </Typography>
+                                        <Typography className="text-xs text-blue-gray-500">
+                                            {issue} • {time}
+                                        </Typography>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            ))
+                        )}
                     </CardBody>
                 </Card>
 
@@ -224,18 +299,36 @@ export function DoctorDashboard() {
                             </thead>
 
                             <tbody>
-                                {doctor_data.all_patients.map(({ name, issue, email, img }, index) => (
-                                    <tr key={index}>
-                                        <td className="py-3 px-6">
-                                            <div className="flex items-center gap-4">
-                                                <Avatar src={img} alt={name} size="sm" />
-                                                <Typography color="blue-gray">{name}</Typography>
-                                            </div>
+                                {loading ? (
+                                    <tr>
+                                        <td colSpan={3} className="py-3 px-6 text-center">
+                                            <Typography variant="small" color="blue-gray">
+                                                Loading patients...
+                                            </Typography>
                                         </td>
-                                        <td className="py-3 px-6">{issue}</td>
-                                        <td className="py-3 px-6">{email}</td>
                                     </tr>
-                                ))}
+                                ) : allPatients.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={3} className="py-3 px-6 text-center">
+                                            <Typography variant="small" color="blue-gray">
+                                                No patients found
+                                            </Typography>
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    allPatients.map(({ name, issue, email, img }, index) => (
+                                        <tr key={index}>
+                                            <td className="py-3 px-6">
+                                                <div className="flex items-center gap-4">
+                                                    <Avatar src={img} alt={name} size="sm" />
+                                                    <Typography color="blue-gray">{name}</Typography>
+                                                </div>
+                                            </td>
+                                            <td className="py-3 px-6">{issue}</td>
+                                            <td className="py-3 px-6">{email}</td>
+                                        </tr>
+                                    ))
+                                )}
                             </tbody>
                         </table>
                     </CardBody>

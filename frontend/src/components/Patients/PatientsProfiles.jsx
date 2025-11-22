@@ -29,7 +29,7 @@ const data = [
                 sender: "patient",
                 name: "Shad",
                 avatar: "/img/bruce-mars.jpeg",
-                message: "My chest feels tight today.",
+                message: "My chest feels tight image.pngtoday.",
                 time: "10:22 AM",
             },
             {
