@@ -253,3 +253,5 @@ playwright-report/
 *.pem
 .certificates/
 
+
+.vite
