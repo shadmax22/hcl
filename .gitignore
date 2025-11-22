@@ -255,6 +255,12 @@ playwright-report/
 .certificates/
 
 .vite
+<<<<<<< HEAD
 =======
 frontend/node_modules/.package-lock.json
 >>>>>>> 1dde3a8 (init)
+=======
+node_modules
+backend/node_modules/.package-lock.json
+backend/package-lock.json
+>>>>>>> 544312e (f)
