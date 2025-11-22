@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 frontend/node_modules
 landing/node_modules# Dependencies
 node_modules/
@@ -255,3 +256,6 @@ playwright-report/
 .certificates/
 
 .vite
+=======
+frontend/node_modules/.package-lock.json
+>>>>>>> 1dde3a8 (init)
