@@ -9,6 +9,7 @@ import {
 import { Home, Profile, Tables, Notifications } from "@/pages/dashboard";
 import { SignIn, SignUp } from "@/pages/auth";
 import SignUpPatient from "./pages/auth/patient/sign-up";
+import HealthTrackerForm from "./pages/dashboard/healthTrackerForm";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -41,6 +42,12 @@ export const routes = [
         name: "notifications",
         path: "/notifications",
         element: <Notifications />,
+      },
+      {
+        icon: <InformationCircleIcon {...icon} />,
+        name: "Health Tracker Form",
+        path: "/healthTrackerForm",
+        element: <HealthTrackerForm />,
       },
     ],
   },
