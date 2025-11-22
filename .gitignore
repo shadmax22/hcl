@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Dependencies
 node_modules/
 npm-debug.log*
@@ -254,3 +255,6 @@ playwright-report/
 .certificates/
 
 .vite
+=======
+frontend/node_modules/.package-lock.json
+>>>>>>> 1dde3a8 (init)
