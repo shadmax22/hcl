@@ -7,7 +7,8 @@ export async function AddDoctorModal() {
   await Modal({
     title: "Add Doctor",
     body: (resolver) => <AddDoctor></AddDoctor>,
-    size: "full-modal"
+    size: "fluid",
+    footer: () => <></>
   })
 }
 
@@ -34,7 +35,7 @@ function AddDoctor() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 w-[40vw] max-h-[400px] overflow-scroll">
 
       {/* ------------------------- NAME -------------------------- */}
       <div>
@@ -206,7 +207,7 @@ function AddDoctor() {
       {/* ------------------------- SUBMIT BUTTON -------------------------- */}
       <button
         type="submit"
-        className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+        className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition sticky bottom-0"
       >
         Add Doctor
       </button>

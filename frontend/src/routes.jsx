@@ -10,6 +10,7 @@ import { Home, PatientPrescription, Tables, Notifications } from "@/pages/dashbo
 import { SignIn, SignUp } from "@/pages/auth";
 import SignUpPatient from "./pages/auth/patient/sign-up";
 import HealthTrackerForm from "./pages/dashboard/healthTrackerForm";
+import AdminDashboard from "./pages/dashboard/admin/AdminDashboard";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -24,6 +25,12 @@ export const routes = [
         name: "dashboard",
         path: "/home",
         element: <Home />,
+      },
+      {
+        icon: <HomeIcon {...icon} />,
+        name: "dashboard",
+        path: "/admin/dashboard",
+        element: <AdminDashboard />,
       },
       {
         icon: <UserCircleIcon {...icon} />,
