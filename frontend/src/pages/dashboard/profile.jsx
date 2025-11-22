@@ -18,6 +18,7 @@ import {
 import { StatisticsChart } from "@/widgets/charts";
 import { chartsConfig } from "@/configs";
 import { useState } from "react";
+import { Modal } from "react-easetools";
 
 export function PatientPrescription() {
 
@@ -153,6 +154,11 @@ export function PatientPrescription() {
           <div className="mb-10 flex items-center justify-between flex-wrap gap-6">
             <div className="flex items-center gap-6">
               <Avatar
+                onClick={() => {
+                  Modal({
+                    title: "Hello world"
+                  })
+                }}
                 src={expected_data.patient.avatar}
                 alt={expected_data.patient.name}
                 size="xl"

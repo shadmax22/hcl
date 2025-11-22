@@ -17,6 +17,7 @@
     "react-apexcharts": "1.4.1",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.66.1",
+    "react-easetools": "^0.0.782",
     "react-router-dom": "6.17.0"
   },
   "devDependencies": {
