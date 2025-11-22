@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { Cog6ToothIcon } from "@heroicons/react/24/solid";
 import { IconButton } from "@material-tailwind/react";
 import {
@@ -8,26 +7,12 @@ import {
   Configurator,
   Footer,
 } from "@/widgets/layout";
-import { getRoutes, getUserRole } from "@/routes";
-import { AddDoctor } from "@/pages/dashboard";
+import routes from "@/routes";
 import { useMaterialTailwindController, setOpenConfigurator } from "@/context";
 
 export function Dashboard() {
   const [controller, dispatch] = useMaterialTailwindController();
   const { sidenavType } = controller;
-  const [routes, setRoutes] = useState([]);
-  const userRole = getUserRole();
-
-  useEffect(() => {
-    // Filter routes based on user role
-    const filteredRoutes = getRoutes();
-    setRoutes(filteredRoutes);
-  }, []);
-
-  // Redirect users without valid roles
-  if (userRole !== "admin" && userRole !== "patient") {
-    return <Navigate to="/auth/sign-in" replace />;
-  }
 
   return (
     <div className="min-h-screen bg-blue-gray-50/50">
@@ -36,7 +21,6 @@ export function Dashboard() {
         brandImg={
           sidenavType === "dark" ? "/img/logo-ct.png" : "/img/logo-ct-dark.png"
         }
-        brandName={userRole === "admin" ? "Admin Dashboard" : "Patient Dashboard"}
       />
       <div className="p-4 xl:ml-80">
         <DashboardNavbar />
@@ -55,11 +39,9 @@ export function Dashboard() {
             ({ layout, pages }) =>
               layout === "dashboard" &&
               pages.map(({ path, element }) => (
-                <Route key={path} exact path={path} element={element} />
+                <Route exact path={path} element={element} />
               ))
           )}
-          <Route path="/add-doctor" element={<AddDoctor />} />
-          <Route path="*" element={<Navigate to={userRole === "admin" ? "/dashboard/admin" : "/dashboard/patient"} replace />} />
         </Routes>
         <div className="text-blue-gray-600">
           <Footer />
