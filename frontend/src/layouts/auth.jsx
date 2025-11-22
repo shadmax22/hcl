@@ -1,12 +1,9 @@
-import { Routes, Route } from "react-router-dom";
+import routes from "@/routes";
 import {
   ChartPieIcon,
-  UserIcon,
-  UserPlusIcon,
-  ArrowRightOnRectangleIcon,
+  UserIcon
 } from "@heroicons/react/24/solid";
-import { Navbar, Footer } from "@/widgets/layout";
-import routes from "@/routes";
+import { Route, Routes } from "react-router-dom";
 
 export function Auth() {
   const navbarRoutes = [
@@ -20,16 +17,7 @@ export function Auth() {
       path: "/dashboard/home",
       icon: UserIcon,
     },
-    {
-      name: "sign up",
-      path: "/auth/sign-up",
-      icon: UserPlusIcon,
-    },
-    {
-      name: "sign in",
-      path: "/auth/sign-in",
-      icon: ArrowRightOnRectangleIcon,
-    },
+
   ];
 
   return (

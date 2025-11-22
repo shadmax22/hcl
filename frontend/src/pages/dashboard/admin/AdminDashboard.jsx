@@ -1,4 +1,4 @@
-import { AddDoctorModal } from "@/components/admin/AddDoctorModal";
+import { AddDoctorModal } from "@/components/Doctors/AddDoctors";
 import {
     ClipboardDocumentCheckIcon,
     UserGroupIcon,

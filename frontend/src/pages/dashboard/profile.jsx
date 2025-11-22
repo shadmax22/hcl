@@ -4,130 +4,31 @@ import {
   CardHeader,
   Avatar,
   Typography,
-  Tabs,
-  TabsHeader,
-  Tab,
   Chip,
+  Button,
+  Input,
 } from "@material-tailwind/react";
-import {
-  HomeIcon,
-  ChatBubbleLeftEllipsisIcon,
-  Cog6ToothIcon,
-  ClockIcon,
-} from "@heroicons/react/24/solid";
+
+import { ClockIcon } from "@heroicons/react/24/solid";
 import { StatisticsChart } from "@/widgets/charts";
 import { chartsConfig } from "@/configs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Modal } from "react-easetools";
 
-export function PatientPrescription() {
+export function PatientPrescription({ data }) {
 
-  const [activeTab, setActiveTab] = useState("info");
-
-  // -----------------------------
+  // -------------------------------------------------------
   // ALL DATA FROM ONE SOURCE
-  // -----------------------------
-  const expected_data = {
-    patient: {
-      name: "Shad Ali",
-      age: 20,
-      gender: "Male",
-      avatar: "/img/bruce-mars.jpeg",
-      blood_group: "O+",
-      last_visit: "21 Nov 2025",
-      doctor: "Dr. Ritesh Sharma",
-    },
-    conversations: [
-      {
-        sender: "doctor",
-        name: "Dr. Ritesh",
-        avatar: "/img/team-1.jpeg",
-        message: "Hello Shad, how are you feeling today?",
-        time: "10:20 AM",
-      },
-      {
-        sender: "patient",
-        name: "Shad",
-        avatar: "/img/bruce-mars.jpeg",
-        message: "Doctor, my chest feels tight today.",
-        time: "10:22 AM",
-      },
-      {
-        sender: "doctor",
-        name: "Dr. Ritesh",
-        avatar: "/img/team-1.jpeg",
-        message: "Take deep breaths. I will update your prescription.",
-        time: "10:25 AM",
-      }
-    ],
+  // -------------------------------------------------------
+  const [expected_data, setExpectedData] = useState(data);
 
-    charts: [
-      {
-        title: "Daily Steps",
-        description: "Your activity today",
-        footer: "Updated just now",
-        series: [2200, 3500, 5600, 8900, 7600, 9000, 12000],
-        x: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-        color: "#0288d1",
-      },
-      {
-        title: "Heartbeat",
-        description: "Average bpm (Resting)",
-        footer: "Updated 2 min ago",
-        series: [72, 75, 71, 70, 74, 72, 73],
-        x: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-        color: "#ef5350",
-      },
-      {
-        title: "Oxygen Level",
-        description: "O2 % saturation levels",
-        footer: "Updated 1 hr ago",
-        series: [97, 96, 97, 98, 98, 97, 96],
-        x: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-        color: "#66bb6a",
-      },
-    ],
+  useEffect(() => {
+    setExpectedData(data)
+  }, [data])
 
-    goals: [
-      {
-        title: "Weight Gain",
-        target: "65 kg",
-        status: "active",
-        due_date: "20 Dec 2025",
-      },
-      {
-        title: "Daily Steps",
-        target: "10,000 steps",
-        status: "completed",
-        due_date: "15 Nov 2025",
-      },
-      {
-        title: "BMI Improvement",
-        target: "20",
-        status: "active",
-        due_date: "05 Jan 2026",
-      },
-    ],
-
-    prescriptions: [
-      {
-        medicine: "Paracetamol 650mg",
-        dosage: "1 tablet after lunch",
-        days: "5 days",
-        doctor: "Dr. Ritesh",
-        date: "19 Nov 2025",
-      },
-      {
-        medicine: "Azithromycin 500mg",
-        dosage: "1 tablet daily",
-        days: "3 days",
-        doctor: "Dr. Kumar",
-        date: "12 Nov 2025",
-      },
-    ],
-  };
-
-  // CHART CONFIG TRANSFORM
+  // ---------------------------------------
+  // CHART BUILDER
+  // ---------------------------------------
   const makeChart = (item) => ({
     type: "line",
     height: 220,
@@ -141,7 +42,29 @@ export function PatientPrescription() {
     },
   });
 
+  // ------------------------------------------------------
+  // DOCTOR MESSAGE SENDER
+  // ------------------------------------------------------
+  const [doctorMessage, setDoctorMessage] = useState("");
 
+  const sendDoctorMessage = () => {
+    if (!doctorMessage.trim()) return;
+
+    const newMessage = {
+      sender: "doctor",
+      name: expected_data.patient.doctor,
+      avatar: "/img/team-1.jpeg",
+      message: doctorMessage,
+      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+    };
+
+    setExpectedData({
+      ...expected_data,
+      conversations: [...expected_data.conversations, newMessage],
+    });
+
+    setDoctorMessage("");
+  };
 
   return (
     <>
@@ -154,11 +77,7 @@ export function PatientPrescription() {
           <div className="mb-10 flex items-center justify-between flex-wrap gap-6">
             <div className="flex items-center gap-6">
               <Avatar
-                onClick={() => {
-                  Modal({
-                    title: "Hello world"
-                  })
-                }}
+                onClick={() => Modal({ title: "Hello world" })}
                 src={expected_data.patient.avatar}
                 alt={expected_data.patient.name}
                 size="xl"
@@ -170,31 +89,47 @@ export function PatientPrescription() {
                   {expected_data.patient.name}
                 </Typography>
                 <Typography variant="small" className="font-normal text-blue-gray-600">
-                  {expected_data.patient.gender} • {expected_data.patient.age} yrs • Blood {expected_data.patient.patient}
+                  {expected_data.patient.gender} • {expected_data.patient.age} yrs • Blood {expected_data.patient.blood_group}
                 </Typography>
                 <Typography variant="small" className="font-normal text-blue-gray-600">
                   Consulting: {expected_data.patient.doctor}
                 </Typography>
               </div>
             </div>
-
-            <div className="w-96">
-              <Tabs value={activeTab} className="w-96">
-                <TabsHeader>
-                  <Tab value="info" onClick={() => setActiveTab("info")}>
-                    <HomeIcon className="-mt-1 mr-2 h-5 w-5" /> Overview
-                  </Tab>
-                  <Tab value="chat" onClick={() => setActiveTab("chat")}>
-                    <ChatBubbleLeftEllipsisIcon className="-mt-0.5 mr-2 h-5 w-5" /> Chat
-                  </Tab>
-                  <Tab value="settings" onClick={() => setActiveTab("settings")}>
-                    <Cog6ToothIcon className="-mt-1 mr-2 h-5 w-5" /> Settings
-                  </Tab>
-                </TabsHeader>
-              </Tabs>
-
-            </div>
           </div>
+
+          {/* ------------------------------------------------------------- */}
+          {/* UPCOMING APPOINTMENT */}
+          {/* ------------------------------------------------------------- */}
+          <Card className="mb-10 bg-blue-gray-50 shadow-sm">
+            <CardBody>
+              <Typography variant="h6" className="mb-2 text-blue-gray-800">
+                Upcoming Appointment
+              </Typography>
+
+              <div className="flex flex-col gap-2">
+                <Typography variant="small">
+                  <b>Date:</b> {expected_data.upcoming_appointment.date}
+                </Typography>
+
+                <Typography variant="small">
+                  <b>Time:</b> {expected_data.upcoming_appointment.time}
+                </Typography>
+
+                <Typography variant="small">
+                  <b>Doctor:</b> {expected_data.upcoming_appointment.doctor}
+                </Typography>
+
+                <Typography variant="small">
+                  <b>Department:</b> {expected_data.upcoming_appointment.department}
+                </Typography>
+              </div>
+            </CardBody>
+          </Card>
+
+          {/* ------------------------------------------------------------- */}
+          {/* CONVERSATIONS + DOCTOR MESSAGE */}
+          {/* ------------------------------------------------------------- */}
 
           {/* ------------------------------------------------------------- */}
           {/* HEALTH CHARTS */}
@@ -213,7 +148,7 @@ export function PatientPrescription() {
                   description={chart.description}
                   footer={
                     <Typography variant="small" className="flex items-center font-normal text-blue-gray-600">
-                      <ClockIcon strokeWidth={2} className="h-4 w-4 text-blue-gray-400" />
+                      <ClockIcon className="h-4 w-4 text-blue-gray-400" />
                       &nbsp;{chart.footer}
                     </Typography>
                   }
@@ -222,6 +157,47 @@ export function PatientPrescription() {
               ))}
             </div>
           </div>
+
+
+          <Card className="mb-12">
+            <CardHeader variant="gradient" color="blue" className="p-6">
+              <Typography variant="h6" color="white">
+                Conversation
+              </Typography>
+            </CardHeader>
+
+            <CardBody className="px-4">
+
+              <div className="flex flex-col gap-6 mb-6">
+                {expected_data.conversations.map((msg, i) => (
+                  <div key={i} className={`flex gap-3 ${msg.sender === "doctor" ? "justify-start" : "justify-end"}`}>
+                    <Avatar src={msg.avatar} size="sm" />
+
+                    <div className="bg-blue-gray-50 p-3 rounded-lg max-w-sm shadow-sm">
+                      <Typography className="text-blue-gray-800 text-sm">{msg.message}</Typography>
+                      <Typography variant="small" className="text-blue-gray-500 mt-1 text-xs">
+                        {msg.time}
+                      </Typography>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* DOCTOR MESSAGE INPUT */}
+              <div className="flex gap-3 items-center">
+                <Input
+                  value={doctorMessage}
+                  onChange={(e) => setDoctorMessage(e.target.value)}
+                  label="Doctor Message"
+                  className="flex-1"
+                />
+
+                <Button color="blue" onClick={sendDoctorMessage}>
+                  Send
+                </Button>
+              </div>
+            </CardBody>
+          </Card>
 
           {/* ------------------------------------------------------------- */}
           {/* GOALS */}
@@ -299,17 +275,11 @@ export function PatientPrescription() {
                   ))}
                 </tbody>
               </table>
-
-
-
             </CardBody>
           </Card>
-
-
 
         </CardBody>
       </Card>
     </>
   );
 }
-
